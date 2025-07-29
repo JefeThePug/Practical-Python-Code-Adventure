@@ -196,7 +196,7 @@ def fill_permanent_data(inspector):
                         ee="The medical inventory is supposed to be all symbols, but I thought I saw some letters and spaces..."
                     ),
                     MainEntry(
-                        ee="So many different coffee beans from so many different countries. I should look at them in order on a map..."
+                        ee="No egg this time... sorry 😅"
                     ),
                     MainEntry(
                         ee="There's a lot of wormholes gathered in one general area. I should try to visualize a map of all these wormholes..."
@@ -1819,7 +1819,7 @@ not across all shelves.</p>""",
                         instructions='Your three shelves are\n<span class="main code part">\n 500, 415, 495\n</span>\ncm wide.\n<br/>\nHere is the inventory of all the coffee beans\n<br/>\n<span class="main sm">\n (same input as Part 1)\n</span>\n:',
                         input_type='txt',
                         form='<label class="main" for="answer2">\n What is the sum of the popularity ratings for all shelves?\n <br/>\n</label>\n<input autocomplete="off" name="answer2" placeholder="..." type="text"/>\n<button>\n Submit\n</button>',
-                        solution='<label class="main">\n Your answer was\n <span class="b i">\n  1603\n </span>\n .\n</label>',
+                        solution='<label class="main">\n Your answer was\n <span class="b i">\n  1625\n </span>\n .\n</label>',
                     ),
                     SubEntry(
                         main_entry_id=9,
@@ -2053,7 +2053,7 @@ flow for this floor plan is <span class="code part">5</span>.</p>""",
                     SubEntry(
                         main_entry_id=10,
                         sub_entry_id=2,
-                        title='Breach the Battle Dome™',
+                        title='Through the Cracks',
                         content="""<p>The crew is in place and ready to commence. In the distance, you can see the
 technology that the Aurawroughts intend to use to free Eos from her galactic prison,
 safeguarded within a protective dome.</p>
@@ -2141,7 +2141,7 @@ nodes</span>.</p>""",
                     ),
                     Solution(
                         part1="653",
-                        part2="1603"
+                        part2="1625"
                     ),
                     Solution(
                         part1="289",
