@@ -185,5 +185,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Excel 
+# Excel
 ~$*
+
+# Editing
+encrypt.py
+encrypted.txt
+/.vscode
