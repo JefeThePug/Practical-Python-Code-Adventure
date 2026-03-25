@@ -1,0 +1,72 @@
+{% extends "default.html" %} {% block title %} Challenge #{{ num }} {% endblock
+%} {% block main %} {% if error %}
+<dialog id="incorrect">
+  <p>{{ error }}</p>
+  <form method="dialog">
+    <button>OK</button>
+  </form>
+</dialog>
+<script>
+  const dialog = document.getElementById("incorrect");
+  dialog.showModal();
+</script>
+{% endif %}
+
+<script>
+  const SERVER_COOLDOWN = {{ cooldown | tojson }};
+</script>
+
+<section class="section" id="part-one">
+  <div class="header">
+    <h2>{% block subtitle1 %}{% endblock %}</h2>
+  </div>
+  {% block section1 %} {% endblock %}
+  <h4 class="main">{% block intro1 %}{% endblock %}</h4>
+  <a id="a"></a>
+  <div class="input">
+    <a href="{{ input_url1 }}" class="input">
+      <p class="main lg">[ click to get input ]</p>
+    </a>
+  </div>
+  <div class="shimmer{% if part_two %} short{% endif %}">
+    <form action="#a" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div class="form-box">{% block solution1 %}{% endblock %}</div>
+    </form>
+  </div>
+</section>
+
+{% if part_two %}
+<section class="section" id="part-two">
+  <div class="header">
+    <h2>{% block subtitle2 %}{% endblock %}</h2>
+  </div>
+  {% block section2 %}{% endblock %}
+  <p class="main">{% block intro2 %}{% endblock %}</p>
+  <a id="b"></a>
+  <div class="input">
+    <a href="{{ input_url2 }}" class="input">
+      <p class="main lg">[ click to get input ]</p>
+    </a>
+  </div>
+  <div class="shimmer{% if done %} short{% endif %}">
+    <form action="#b" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div class="form-box">{% block solution2 %}{% endblock %}</div>
+    </form>
+  </div>
+</section>
+
+{% if done %}
+<section class="section" id="complete">
+  <form class="form-box" id="access" action="/access" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <input type="hidden" name="num" value="{{ obscure_post(num) }}" />
+    <button class="access-button">Access Discussion Channel</button>
+  </form>
+</section>
+{% endif %} {% endif %}
+
+<script src="{{ url_for('static', filename='js/cooldown.js') }}" defer></script>
+
+{% endblock %}

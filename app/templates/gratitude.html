@@ -1,0 +1,98 @@
+{% extends "default.html" %}
+
+{% block title %} Thank You! {% endblock %}
+
+{% block main %}
+<section class="section" id="announcement">
+  <div class="img-container">
+    <img src="{{ url_for('static', filename='images/gratitude.png') }}" alt="Thank You Image">
+  </div>
+  <div>
+    <h2>I am grateful to my community for their support.</h2>
+    <h3>About This Project</h3>
+    <p>
+      All challenges were thought up by me,
+      <a href="https://github.com/JefeThePug">JefeThePug</a>.
+      Though inspiration for individual challenges has come from
+      a number of sources.
+    </p>
+    <p>
+      The initial inspiration for this project comes from
+      <a href="https://adventofcode.com/">Advent of Code</a>
+      created by Eric Wastl.
+    </p><br>
+    <p class="b i">
+      Special thanks are due to
+    </p>
+    <hr>
+    <ul>
+      <li>
+        <a href="https://github.com/Makaze">makaze
+          <i class="devicon-github-original"></i></a>
+        for beta testing and advice with the 2025 challenges
+      </li>
+      <li>
+        <a href="https://github.com/max-min-median/">max_min_median
+          <i class="devicon-github-original"></i></a>
+        for beta testing and advice with the 2025 challenges
+      </li>
+      <li>
+        <span class="false-link">_zadok_</span>
+        for beta testing and advice with the 2025 challenges
+      </li>
+    </ul>
+    <hr>
+    <ul>
+      <li>
+        <a href="https://github.com/algmyr">algmyr
+          <i class="devicon-github-original"></i></a>
+        for beta testing the 2026 challenges
+      </li>
+      <li>
+        <a href="https://github.com/ThobiWanKenobi">thobias
+          <i class="devicon-github-original"></i></a>
+        for beta testing the 2026 challenges
+      </li>
+      <li>
+        <a href="https://github.com/jaredturck">Jared
+          <i class="devicon-github-original"></i></a>
+        for testing the site's UX (Version 2)
+      </li>
+    </ul>
+    <hr>
+    <p class="b i">
+      Special thanks are also due to
+    </p>
+    <ul>
+      <li>
+        <a href="https://github.com/Xarlos89">.xarlos
+          <i class="devicon-github-original"></i></a>
+        for creating the Practical Python Discord server
+        and hosting this website
+      </li>
+    </ul>
+  </div>
+</section>
+<section class="section" id="advertise">
+  <div>
+    <h3>Seeking Volunteers</h3>
+    <p>
+      I am currently seeking volunteers for
+    </p>
+    <ul>
+      <li><span class="b">Beta Testers</span> for future challenges</li>
+      <li>An <span class="b">illustrator</span> for the landing pages' theme images</li>
+    </ul>
+    <p>
+      If you enjoy this project and want to help me grow it into
+      something great, you can <a href="mailto:jefethepug@protonmail.com">
+      email</a> me.
+    </p></br>
+    <p>
+      <button onclick="location.href='/'">
+        Home
+      </button>
+    </p>
+  </div>
+</section>
+{% endblock %}

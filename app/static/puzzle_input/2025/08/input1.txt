@@ -1,0 +1,101 @@
+country,bean,roast,width,rating
+Georgia,Liberica,Dark,169,67
+Solomon Islands,MundoNovo,Medium,60,48
+Saint Barthélemy,Typica,Dark,144,157
+Finland,Typica,Medium,65,57
+Malta,Arabica,Blonde,43,103
+Antigua and Barbuda,Typica,Light,112,156
+Eritrea,Arabica,Light,115,149
+Malaysia,Arabica,Dark,112,78
+Norfolk Island,Arabica,French,27,175
+Faroe Islands,Excelsa,Light,146,129
+Faroe Islands,Arabica,Medium,113,162
+Namibia,Typica,Blonde,90,197
+Poland,Liberica,French,57,142
+Barbados,Typica,French,98,117
+Northern Mariana Islands,Arabica,French,91,112
+Niger,Excelsa,Light,47,163
+Colombia,Robusta,French,153,111
+Kyrgyzstan,Robusta,Light,122,170
+Bulgaria,Robusta,Blonde,60,149
+Botswana,Excelsa,Medium,35,184
+China,Typica,French,55,152
+Guernsey,MundoNovo,French,84,56
+Indonesia,Robusta,Blonde,121,190
+South Sudan,Liberica,Dark,51,26
+Grenada,Typica,Medium,126,82
+San Marino,Typica,Medium,164,96
+Tunisia,Robusta,Light,122,72
+Cook Islands,Arabica,French,56,62
+Kazakhstan,Robusta,Dark,71,75
+Chile,Arabica,Medium,28,74
+Guatemala,Typica,Blonde,90,113
+Japan,Typica,Medium,105,132
+Armenia,Arabica,French,171,98
+Monaco,MundoNovo,Light,106,172
+Peru,Typica,Dark,35,155
+Georgia,Typica,Blonde,48,81
+Cook Islands,Typica,Dark,124,88
+Norfolk Island,Typica,Blonde,101,56
+Saint Kitts and Nevis,Typica,Medium,94,133
+Pakistan,MundoNovo,Blonde,152,146
+Armenia,Typica,Blonde,136,168
+Iceland,Robusta,Medium,60,159
+Marshall Islands,Excelsa,Light,154,160
+Ethiopia,Robusta,Blonde,52,195
+Jordan,Typica,Light,70,184
+United Arab Emirates,Excelsa,Blonde,30,56
+Uganda,Arabica,Dark,30,176
+Papua New Guinea,MundoNovo,Dark,14,41
+Honduras,Excelsa,Dark,108,172
+Marshall Islands,MundoNovo,Dark,100,143
+Czech Republic,Typica,Medium,74,170
+Aruba,Excelsa,Light,91,89
+Slovakia,MundoNovo,Light,90,99
+Angola,Arabica,French,31,22
+Madagascar,Robusta,French,42,123
+Kazakhstan,Excelsa,Blonde,135,73
+Afghanistan,Liberica,Blonde,138,149
+Somalia,Robusta,Light,26,61
+Åland Islands,Robusta,Medium,77,132
+China,Typica,Medium,24,59
+Barbados,Arabica,Medium,24,91
+Micronesia,Typica,Dark,109,21
+Madagascar,Robusta,French,87,97
+Cocos (Keeling) Islands,Excelsa,Blonde,33,104
+Angola,Liberica,Medium,77,117
+Niger,Typica,Medium,55,100
+Costa Rica,Typica,Light,92,30
+New Zealand,Typica,French,115,55
+Samoa,Typica,French,49,154
+French Polynesia,Arabica,Dark,131,92
+Kiribati,Arabica,Light,164,145
+Anguilla,Typica,French,109,42
+Guernsey,Arabica,Blonde,104,149
+Slovenia,MundoNovo,Dark,46,42
+Faroe Islands,Typica,Dark,66,110
+Romania,Robusta,Blonde,70,95
+Libya,Typica,Light,24,64
+Vietnam,Typica,French,75,42
+Western Sahara,Liberica,French,155,162
+Switzerland,Excelsa,Dark,71,92
+Canada,Liberica,Dark,82,144
+Argentina,Liberica,French,101,153
+Algeria,Liberica,French,117,167
+Mongolia,Arabica,Dark,149,128
+Namibia,Robusta,Blonde,153,118
+Iran,Typica,Medium,125,131
+Liberia,MundoNovo,Light,160,173
+Laos,Arabica,French,119,128
+Paraguay,Excelsa,French,153,82
+Japan,Arabica,Blonde,130,167
+Armenia,Robusta,Light,58,80
+Mexico,Excelsa,Medium,29,89
+Ireland,Excelsa,Blonde,46,78
+Macedonia,Excelsa,Medium,116,184
+Bosnia and Herzegovina,MundoNovo,Light,95,68
+Angola,Robusta,Blonde,130,189
+Anguilla,Liberica,Light,125,175
+Guam,Liberica,Medium,141,126
+Serbia,Liberica,French,127,107
+Bhutan,Arabica,Dark,157,138

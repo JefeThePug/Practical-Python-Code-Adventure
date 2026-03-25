@@ -1,0 +1,194 @@
+/* Sponsor */
+
+.tiers {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.explorer-name {
+    font-weight: bold;
+    margin: 10px 0 0 0;
+}
+
+.tier {
+    height: 50px !important;
+}
+
+/* Keys */
+.tier1-key, .tier1plus-key, .tier2-key, .tier3-key {
+    color: black;
+}
+
+.tier1-key {
+    background: var(--soft-light), var(--basic-gradient);
+}
+
+.tier1plus-key {
+    background: var(--soft-light), var(--special-gradient);
+}
+
+.tier2-key {
+    background: var(--soft-light), var(--silver-gradient);
+}
+
+.tier3-key {
+    background: var(--soft-light), var(--gold-gradient);
+}
+
+/* Tier boxes with decorative ::before ring */
+.tier1-box, .tier2-box, .tier3-box {
+    position: relative;
+    margin: 0.5em 0 2em 0;
+    min-height: 50px;
+    border-radius: 20px;
+    padding: 1.5em 1em;
+    box-sizing: border-box;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        padding: 3px;
+        border-radius: inherit;
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        pointer-events: none;
+    }
+}
+
+.tier1-box {
+    &::before {
+        background: var(--special-gradient);
+    }
+}
+
+.tier2-box {
+    &::before {
+        background: var(--silver-gradient);
+    }
+}
+
+.tier3-box {
+    &::before {
+        background: var(--gold-gradient);
+    }
+}
+
+/* Lists inside tiers */
+.tier1-lists, .tier2-lists, .tier3-lists {
+    display: grid;
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tier1-lists {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.tier2-lists {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* Badges */
+.pathfinder, .wayfarer, .explorer {
+    text-align: center;
+    border-radius: 30px;
+    color: black;
+}
+
+.pathfinder, .wayfarer {
+    width: 150px;
+    height: 50px;
+}
+
+.pathfinder {
+    background: var(--soft-light), var(--special-gradient);
+}
+
+.wayfarer {
+    background: var(--soft-light), var(--basic-gradient);
+}
+
+.explorer {
+    width: 300px;
+    padding: 1rem;
+    background: var(--soft-light), var(--soft-light), var(--silver-gradient);
+}
+
+.pathfinder a, .explorer p {
+    color: black;
+    text-decoration: underline;
+}
+
+/* Images */
+.img-2, .img-3 {
+    height: auto;
+    width: auto;
+}
+
+.img-2 {
+    max-width: 200px;
+    max-height: 80px;
+}
+
+.img-3 {
+    max-width: 300px;
+    max-height: 120px;
+}
+
+/* Tier 3 layout */
+.tier3-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    background: var(--soft-light), var(--soft-light), var(--gold-gradient);
+
+    .box-a, .box-b, .box-c {
+        padding: 8px;
+        max-width: 100%;
+        color: black;
+    }
+
+    .box-b, .box-a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .box-b {
+        font-size: x-large;
+        font-weight: bold;
+    }
+}
+
+@media (min-width: 768px) {
+    .tier3-layout {
+        grid-template-columns: 1fr 300px;
+        grid-template-rows: auto auto;
+
+        .box-a {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+            width: 300px;
+            max-width: 100%;
+            padding: 0 20px 0 0;
+        }
+
+        .box-b {
+            grid-column: 1;
+            grid-row: 1;
+            padding: 20px 0 5px 20px;
+        }
+
+        .box-c {
+            grid-column: 1;
+            grid-row: 2;
+            padding: 5px 0 20px 20px;
+        }
+    }
+}

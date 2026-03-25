@@ -1,0 +1,127 @@
+/* Navbar */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.75rem 0;
+    background: var(--b-sec);
+    color: var(--t-nav);
+}
+
+.nav {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    gap: 5%;
+    height: 30px;
+}
+
+.nav a, .nav .false-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--t-nav);
+    text-decoration: none;
+    font-weight: bold;
+    transition: filter 0.15s ease;
+
+    &:hover {
+        filter: saturate(10);
+    }
+}
+
+.nav a:hover img {
+    filter: saturate(0.05);
+}
+
+.nav img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: block;
+}
+
+/* User menu (hover swap) */
+.user-menu {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+
+    span {
+        user-select: none;
+    }
+
+    .user-action {
+        display: inline-flex;
+        opacity: 0;
+        color: var(--t-nav-special);
+        transition: opacity 0.15s ease;
+    }
+
+    &:hover {
+        .user-action {
+            opacity: 1;
+        }
+    }
+}
+
+/* Dropdown */
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--b-sec);
+    border-radius: 4px;
+    display: none;
+    width: 100%;
+    min-width: 3em;
+    filter: saturate(0.1) !important;
+    box-sizing: border-box;
+    z-index: 1001;
+
+    a {
+        display: block;
+        text-decoration: none;
+        text-align: center;
+        width: 100%;
+        padding: 0.25em 0;
+
+        &:hover {
+            color: var(--t-nav);
+        }
+
+        p {
+            margin: 5px 0;
+        }
+    }
+}
+
+/* Year menu reveals dropdown */
+.year-menu {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: var(--t-main);
+    padding: 5px;
+
+    &:hover {
+        .dropdown {
+            display: block;
+        }
+    }
+}
+
+/* responsive helper */
+@media (max-width: 900px) {
+    .nav-text {
+        display: none;
+    }
+}

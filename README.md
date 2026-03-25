@@ -1,33 +1,43 @@
-# Practical Python Code Adventure
+# Practical Python Code Adventure v2
 
-**Live at:** [https://adventure.practicalpython.org](https://adventure.practicalpython.org)
+![Made with Love](https://img.shields.io/badge/made%20with-love-red?style=for-the-badge)
+![and Python](https://img.shields.io/badge/%26-python-blue?style=for-the-badge)
+![(Python Logo)](https://img.shields.io/badge/-blue?logo=python&logoColor=white&style=for-the-badge)
 
-**Code Adventure** is a series of 10 interactive coding challenges (each with two parts), inspired by [Advent of Code](https://adventofcode.com/). Built with Flask, PostgreSQL, and Docker, the app is designed for members of the Practical Python Discord community. Solving both parts of a challenge grants access to a private discussion thread where participants can share their solutions and strategies.
+![Last Commit](https://img.shields.io/github/last-commit/JefeThePug/Zorak-Coding-Challenges)
+![GitHub Stars](https://img.shields.io/github/stars/JefeThePug/Zorak-Coding-Challenges)
 
-The project is containerized and deployed on an AWS EC2 instance.
+> **`🌐 Live at:`** [https://adventure.practicalpython.org](https://adventure.practicalpython.org)
+
+Version 2 of **Code Adventure** brings a fully modular backend, a redesigned user experience, and flexible setup options for new or returning deployments.
+
+The project is a series of interactive coding challenges (each with two parts), inspired by [Advent of Code](https://adventofcode.com), built for the [Practical Python Discord community](https://github.com/practical-python-org). Challenges are now organized into yearly collections of 10, with a new set released each year.
+
+All previous features have been preserved and improved, with better code structure, usability, and deployment options.
 
 ---
 
-## Features
+## Key Updates in Version 2
 
-- **Interactive Challenges** – Solve progressively difficult problems across 10 themed challenges.
-- **Two-Part Format** – Each challenge has two parts to deepen engagement and difficulty.
-- **Discord Integration** – Authenticate with Discord and unlock private solution threads.
-- **Progress Tracking** – See which challenges you've completed and continue where you left off.
-- **Challenge Obfuscation** – IDs are masked to encourage creative problem-solving.
-- **Admin Dashboard** – Browser-based interface for editing challenge data and managing users.
-- **PostgreSQL Backend** – All data is stored and managed using a relational schema.
+- **Modular Backend** – Blueprints, services, and templating are now separated for clean, maintainable code.
+- **Updated Database** – New PostgreSQL schema for version 2 challenges, with optional migration from version 1.
+- **Flexible Setup Options** – Start fresh or carry over progress from version 1 using `SETUP_TYPE`.
+- **Redesigned UX** – Clearer layout, more eye-catching style, and expanded site content.
+- **Submission Cooldown** - Server-side timer that prevents repeated submissions and discourages brute-force guessing.
+- **Challenge Organization** – Puzzle inputs and media now structured for multiple years, simplifying future expansion.
+- **Improved Admin Dashboard** – Modular routes and updated UI for managing users, challenges, sponsors, and releases.
 
 ---
 
 ## Tech Stack
 
-- Python 3.x
-- Flask
-- PostgreSQL
-- SQLAlchemy
-- Docker / Docker Compose
-- Discord OAuth2
+- ![Python3.10+](https://img.shields.io/badge/Python3.10+-3776AB?style=plastic&logo=python&logoColor=white)
+- ![Flask](https://img.shields.io/badge/Flask-3BABC3?style=plastic&logo=flask&logoColor=white)
+- ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=plastic&logo=postgresql&logoColor=white)
+- ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-D71F00?style=plastic&logo=sqlalchemy&logoColor=white)
+- ![Docker / DockerCompose](https://img.shields.io/badge/Docker_/_DockerCompose-2496ED?style=plastic&logo=docker&logoColor=white)
+- ![uv](https://img.shields.io/badge/uv-DE5FE9?style=plastic&logo=uv&logoColor=white)
+- ![Discord](https://img.shields.io/badge/Discord-5865F2?style=plastic&logo=discord&logoColor=white) ![OAuth](https://img.shields.io/badge/OAuth2-EB5424?style=plastic&logo=auth0&logoColor=white)
 
 ---
 
@@ -35,118 +45,164 @@ The project is containerized and deployed on an AWS EC2 instance.
 
 ### Prerequisites
 
-- Python 3.x (for local development)
-- Docker + Docker Compose
-- PostgreSQL (via Docker or local install)
+- Python 3.10+
+- Docker & Docker Compose
+- PostgreSQL (local or Docker-based)
+
+> ⚠️ Python 3.10+ is required due to `uv` dependency management.
 
 ---
 
 ### Environment Variables
 
-Create a `.env` file in the project root with the following contents:
+Create a `.env` file in the project root (you can copy `.env.EXAMPLE` and fill in the values):
 
 ```ini
 # PostgreSQL
 POSTGRES_USER="postgres"
 POSTGRES_PASSWORD="postgres"
-POSTGRES_SERVER="db"         # Docker container name
+POSTGRES_SERVER="postgres"
 POSTGRES_PORT="5432"
-DATABASE_NAME="zorak"
+DATABASE_NAME="YOUR_DB_NAME"
 
-# SQLAlchemy
+# Flask
+FLASK_PORT=5000
+FLASK_ENV="production"  # or "development"
 SECRET_KEY="Something_secret_goes_here"
 
-# Discord OAuth
-DISCORD_ADMIN_USER_ID='ABCDE'
-DISCORD_REDIRECT_URI="http://127.0.0.1:5002/callback"
-CLIENT_ID='your_discord_client_id'
-CLIENT_SECRET='your_discord_client_secret'
-BOT_TOKEN='your_discord_bot_token'
+# Discord
+DISCORD_ADMIN_USER_ID="YOUR_ADMIN_ID"  # Used in entrypoint.sh
+DISCORD_REDIRECT_URI="BASE_URL_HERE/callback"
+DISCORD_CLIENT_ID="YOUR_CLIENT_ID"
+DISCORD_CLIENT_SECRET="YOUR_CLIENT_SECRET"
+DISCORD_BOT_TOKEN="YOUR_BOT_TOKEN"
+
+# DB Setup in Docker Container
+SETUP_TYPE="setup"   # To setup a new blank DB
+#SETUP_TYPE="update" # To update from the 2025 DB without clearing user progress
+
+# Latest Year
+YEAR=2026
+KEY2025="KEY_HERE"
+KEY2026="DIFFERENT_KEY_HERE"
+# Add keys for other released years as needed
 ```
 
-The application internally constructs the database URL from these values:
+> **POSTGRES\_\* variables / DATABASE_NAME** – DB credentials and host info.
 
-```
-postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@<POSTGRES_SERVER>:<POSTGRES_PORT>/<DATABASE_NAME>
-```
+> **FLASK_PORT** – Port Flask runs on (default 5000).  
+> **FLASK_ENV** – Set to `development` or `production`.
+> **SECRET_KEY** – Used for securely signing application data and tokens.
+
+> **DISCORD_ADMIN_USER_ID** – Your Discord user ID for admin dashboard access.  
+> **DISCORD\_\* tokens** – OAuth2 credentials for authentication and bot access.
+
+> **SETUP_TYPE** – `setup` = new DB, `update` = migrate from 2025 DB without clearing progress.
+
+> **YEAR** – Latest challenge year to include (starting from 2025). _Must not exceed released years_.  
+> **KEY####** – Required key to access each year’s challenge and solution data to fill the DB.
+
+To obtain KEYs, contact the project owner via [Discord](https://discord.com/users/609283782897303554) or by [email](mailto:jefethepug@protonmail.com).
 
 ---
 
-## Local Development
+### Local Development
 
 1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/JefeThePug/Practical-Python-Code-Adventure.git
-   cd Practical-Python-Code-Adventure
-   ```
 
-2. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+git clone https://github.com/JefeThePug/Zorak-Coding-Challenges.git
+cd Zorak-Coding-Challenges
+```
 
-3. **Ensure PostgreSQL is running**, and that your `.env` file matches the database configuration.
+2. **Install dependencies with uv**:
+
+```bash
+uv sync --frozen --no-dev --system
+```
+
+3. **Run the initial setup**:
+
+- For a blank DB: `python setup.py`
+- To migrate from version 1: `python update_from_2025.py`
 
 4. **Start the application**:
-   ```bash
-   python app.py
-   ```
 
-5. **Access the app**:
-   Open your browser and visit: [http://127.0.0.1:5000](http://127.0.0.1:5000)
+```bash
+python -m app.run
+```
 
----
-
-## Running with Docker
-
-1. **Build and start the containers**:
-   ```bash
-   docker-compose up --build
-   ```
-
-2. **Visit the app**:
-   Once running, go to: [http://localhost:5000](http://localhost:5000)
-
-> The `db` hostname is used internally by the Flask app to connect to the PostgreSQL container, as defined by `POSTGRES_SERVER=db` in your `.env`.
+5. **Access the app**: [http://localhost:5000](http://localhost:5000)
 
 ---
 
-## Usage
+### Running with Docker
 
-- **Login**: Users can log in using their Discord accounts, which allows the application to track their progress.
-- **Challenges**: Navigate to the challenges through the main page. Each challenge will have two parts that can be solved independently.
-- **Submit Solutions**: Users can submit their answers for each part of a challenge. Correct answers will update their progress and grant access to the discussion channel.
-- **Collaborate**: Share and discuss solutions with others in the Discord server.
+1. **Build and start containers**:
+
+```bash
+docker-compose up --build
+```
+
+2. **Access the app**: [http://localhost:5000](http://localhost:5000)
+
+> The Flask app connects to PostgreSQL using the hostname defined in `POSTGRES_SERVER` in your `.env`.
 
 ---
 
-## Code Overview
+## Usage Overview
 
-### `app.py`
+- **Login** – Authenticate via Discord to track progress.
+- **Challenges** – Access version 2 challenges, each with two parts.
+- **Submit Solutions** – Correct answers update progress and unlock discussion threads.
+- **Admin Tools** – Modular dashboard for managing users, challenges, sponsors, and releases.
 
-- Handles Flask routes for login, challenges, and admin tools.
-- Uses SQLAlchemy for database interaction.
-- Implements OAuth2 with Discord for authentication and role management.
+---
 
-### `models.py` 
-- Defines the database schema using SQLAlchemy ORM. Models include:
-  - `DiscordID`, `MainEntry`, `SubEntry`, `Progress`, `Solution`, `Obfuscation`, `Permissions`, and `Release`.
+## Code Structure Highlights
 
-### `cache.py`
-- Implements the `DataCache` class. This module loads and stores frequently accessed data (e.g., HTML content, permissions, obfuscations, and progress) into memory, reducing redundant database queries and improving runtime performance.
+- **`app/blueprints/`** – Routes organized by functionality: `auth`, `challenge`, `admin`, `main`, `errors`.
+- **`app/services/`** – Backend services for cooldowns, progress, and Discord notifications.
+- **`app/templating/`** – Global functions and utilities for rendering templates.
+- **`setup.py` & `update_from_2025.py`** – Setup a blank DB or migrate from version 1.
+- **`app/static/` & `app/templates/`** – Organized media and templates for multiple years, with year-specific style overrides.
 
-### `setup.py`
-- Handles initial project setup, such as creating the database schema and optionally prepopulating data for development or testing. Run this file once before launching the app to ensure your environment is ready.
+---
 
-### `ending.js`
+## Admin Dashboard
 
-- Controls celebratory animations (confetti) triggered after completing challenges.
+The admin dashboard allows easy management of Discord channel assignment, user progress, challenge content, and sponsor info. Here's a quick look:
+
+![Admin Dashboard](dashboard.gif)  
+_↗️ Looping demo of the admin dashboard showing user and challenge management._
+
+---
+
+## Sponsorship
+
+`Version 2 now supports sponsorship.`
+
+**Sponsorship helps maintain the server, fund new challenges, and support ongoing development.**
+
+Individuals or companies can support the project financially. Sponsors are acknowledged on the site and help maintain and expand new challenges, infrastructure, and features. Contact the project owner for details on sponsoring.
+
+---
+
+## Contributing
+
+Contributions can include:
+
+- Providing new challenge ideas
+- Providing feedback or suggestions on frontend UX
+- Updating backend services
+- Discovering / fixing bugs
+- Improving documentation
 
 ---
 
 ## License
 
-This project is open-source and intended for educational and community-building use.
+Open-source, intended for educational and community-building use.
 
 ---
 
@@ -154,3 +210,5 @@ This project is open-source and intended for educational and community-building 
 
 - Inspired by [Advent of Code](https://adventofcode.com)
 - Built for the [Practical Python Discord](https://github.com/practical-python-org)
+- Thanks to community members who tested and provided feedback for version 2.<br>
+  **Individual credit is acknowledged on [the website](https://adventure.practicalpython.org/gratitude).**

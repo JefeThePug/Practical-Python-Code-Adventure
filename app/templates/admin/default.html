@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Admin Portal</title>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+            rel="stylesheet"
+    />
+    <link
+            href="{{ url_for('static', filename='style/admin/variables.css') }}"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <link
+            href="{{ url_for('static', filename='style/admin/admin_style.css') }}"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <link
+            href="{{ url_for('static', filename='favicon.svg') }}"
+            rel="icon"
+            type="image/svg+xml"
+    />
+    <link href="{{ url_for('static', filename='favicon.ico') }}" rel="icon"/>
+</head>
+<body>
+<header class="top">
+    <span class="material-symbols-outlined"> admin_panel_settings </span>
+    Practical Python Code Adventure Admin Portal
+</header>
+<div class="layout">
+    <aside class="sidebar collapsed" id="sidebar">
+        <button class="toggle" id="toggle">☰</button>
+
+        <nav class="label">
+            <a href="{{ url_for('admin.release') }}" target="content">
+                <p class="b">
+                    <span class="material-symbols-outlined">rocket_launch</span>
+                    Release Cap
+                </p>
+            </a>
+            <p class="subtext">Update release number for each year</p>
+            <a href="{{ url_for('admin.discord') }}" target="content">
+                <p>
+                    <span class="material-symbols-outlined">quick_reference</span>
+                    Edit Discord IDs
+                </p>
+            </a>
+            <p class="subtext">Change Server, Role, and Channel IDs</p>
+            <a href="{{ url_for('admin.html') }}" target="content">
+                <p>
+                    <span class="material-symbols-outlined">newsmode</span>
+                    Edit HTML
+                </p>
+            </a>
+            <p class="subtext">Edit challenge HTML for each year</p>
+            <a href="{{ url_for('admin.solutions') }}" target="content">
+                <p>
+                    <span class="material-symbols-outlined">emoji_objects</span>
+                    Edit Solutions
+                </p>
+            </a>
+            <p class="subtext">Edit solutions for each year</p>
+            <a href="{{ url_for('admin.user') }}" target="content">
+                <p>
+                    <span class="material-symbols-outlined">leaderboard</span>
+                    Edit User Progress
+                </p>
+            </a>
+            <p class="subtext">Edit user progress and GitHub link</p>
+            <a href="{{ url_for('admin.sponsor') }}" target="content">
+                <p>
+                    <span class="material-symbols-outlined">volunteer_activism</span>
+                    Edit Sponsors
+                </p>
+            </a>
+            <p class="subtext">Edit list of sponsors and their links</p>
+            <a href="{{ url_for('admin.perms') }}" target="content">
+                <p>
+                    <span class="material-symbols-outlined">admin_panel_settings</span>
+                    Update Admins
+                </p>
+            </a>
+            <p class="subtext">Update User IDs with Admin permissions</p>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <iframe name="content" src="{{ url_for('admin.admin_home') }}"></iframe>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{% extends "default.html" %} {% block title %} Practical Python Code Adventure
+{% endblock %} {% block main %}
+<section class="section" id="logo">
+  <div class="logo-container">
+    <img
+      alt="Illustration of Captain Xarlos"
+      src="{{ url_for('static', filename='images/' ~ year ~ '/index/logo.png') }}"
+    />
+  </div>
+  {% include year ~ '/index_content.html' %}
+</section>
+
+<section class="section" id="challenges">
+  <ul>
+    {% for week in range(1, num + 1) %}
+    <li>
+      <a
+        href="{{ url_for('challenge.challenge', year=year, obs_num=obfuscate(year, week)) }}"
+        >Week&nbsp;{{ "%2d" | format(week) }}</a
+      >
+      <span
+        class="material-symbols-outlined icon {{ ('off', 'on')[rockets[week - 1][0]] }}"
+      >
+        {{ ICONS[year]["a-icon"] }}
+      </span>
+      <span
+        class="material-symbols-outlined icon {{ ('off', 'on')[rockets[week - 1][1]] }}"
+      >
+        {{ ICONS[year]["b-icon"] }}
+      </span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% if num < 10 %} More Challenges Coming Soon… {% endif %}
+</section>
+
+{% endblock %}

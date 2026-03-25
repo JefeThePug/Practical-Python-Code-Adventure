@@ -1,0 +1,36 @@
+{% extends "default.html" %}
+
+{% block title %} Login {% endblock %}
+
+{% block main %}
+<section class="section" id="announcement">
+  <div class="img-container">
+    <img src="{{ url_for('static', filename='images/login.png') }}" alt="Login Image">
+  </div>
+  <div>
+    <h2>Login with Discord</h2>
+    <h3>What this means:</h3>
+    <p>
+      Logging into your Discord account will save your progress with completed challenges on this site.
+      Additionally, this app gives you access to private discussion threads for each challenge
+      within the Practical Python server.
+    </p>
+    <p>
+      If you are not a member of the Practical Python server, this app will join that server for you. This
+      provides a forum for discussing your solutions and viewing the solutions of other challengers.
+    </p>
+    <p>
+      Because of this, the login prompt will require you to allow this app to control joining servers
+      automatically for you. Practical Python does not store any of your data in its database apart
+      from your username/id and your progress with these challenges. We promise that your personal
+      information is never kept on file.
+    </p>
+    <button onclick="location.href='/login'">Login</button>
+  </div></br>
+  <p>
+    <button onclick="location.href='/'">
+      Home
+    </button>
+  </p>
+</section>
+{% endblock %}

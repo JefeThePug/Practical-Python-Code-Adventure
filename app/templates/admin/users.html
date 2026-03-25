@@ -1,0 +1,86 @@
+{% extends "admin/iframe.html" %}
+
+{% block content %}
+<section>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for _, message in messages %}
+    <p class="b alert">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form class="user grid-form" action="/admin/users" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h2>Year</h2>
+        <div class="form-group">
+            <label for="year">Challenge Year:</label>
+            <select id="year" name="year" onchange="updateLocation()">
+                {% for y in years %}
+                <option value="{{ y }}" {{
+                'selected' if y == selected_year }}>{{ y }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <p class="indent alert"> ‼️Changing the year will discard any unsaved user changes.</p>
+
+        <h2>
+            Users
+            <span class="sm blue">* To remove a user from the database, delete only the NAME field </span><br>
+            <span class="indent"> </span><span class="sm indent alert">
+                ‼️Removing a user deletes <span class="b">all</span> of their progress.
+            </span>
+        </h2>
+        <div class="form-group">
+            <div class="input-grid">
+                <div class="grid-header">ID</div>
+                <div class="grid-header">NAME</div>
+                <div class="grid-header">GITHUB</div>
+                {% for i in range(1, 11) %}
+                <div class="grid-header right"> {{ i }}</div>
+                <div class="grid-header">&nbsp;</div>
+                <div class="v-gap">&nbsp;</div>
+                {% endfor %}
+
+                {% for user in users %}
+                {% set n=loop.index0 %}
+                <input id="user_id_{{ n }}" name="user_id_{{ n }}" type="text" value="{{ user['user_id'] }}">
+                <input id="name_{{ n }}" name="name_{{ n }}" type="text" value="{{ user['name'] }}">
+                <input id="github_{{ n }}" name="github_{{ n }}" type="text" value="{{ user['github'] or '' }}">
+                {% for c in user['progress'] %}
+                <input id="{{ loop.index }}A_{{ n }}" name="{{ loop.index }}A_{{ n }}"
+                       type="checkbox" {{ 'checked' if c[0] }}>
+                <input id="{{ loop.index }}B_{{ n }}" name="{{ loop.index }}B_{{ n }}"
+                       type="checkbox" {{ 'checked' if c[1] }}>
+                <div class="v-gap">&nbsp;</div>
+                {% endfor %}
+                {% endfor %}
+
+                {% for i in range(users|length, users|length + 3) %}
+                <input id="user_id_{{ i }}" name="user_id_{{ i }}" type="text" value="">
+                <input id="name_{{ i }}" name="name_{{ i }}" type="text" value="">
+                <input id="github_{{ i }}" name="github_{{ i }}" type="text" value="">
+                {% for c in range(10) %}
+                <input id="{{ c+1 }}A_{{ i }}" name="{{ c+1 }}A_{{ i }}" type="checkbox">
+                <input id="{{ c+1 }}B_{{ i }}" name="{{ c+1 }}B_{{ i }}" type="checkbox">
+                <div class="v-gap">&nbsp;</div>
+                {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+        <hr>
+
+        <div class="actions indent">
+            <input type="button" value="CANCEL" onclick="updateLocation()">
+            <input type="submit" value="SAVE">
+        </div>
+    </form>
+</section>
+
+<script>
+    function updateLocation() {
+        const year = document.getElementById('year').value;
+        window.location.href = "{{ url_for('admin.user') }}?year=" + year;
+    }
+</script>
+{% endblock %}

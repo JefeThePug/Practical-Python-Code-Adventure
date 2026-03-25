@@ -1,0 +1,129 @@
+@font-face {
+    font-family: 'dejavu_sans_monobook';
+    src: url('DejaVuSansMono-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Base layout + typography */
+html, body {
+    background-color: var(--b-main);
+    color: var(--t-main);
+    font-family: "Roboto Mono", monospace;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-size: medium;
+    margin: 0;
+}
+
+.material-symbols-outlined {
+    font-size: 10px;
+}
+
+a {
+    color: var(--t-link);
+    text-decoration: none;
+    text-shadow: none;
+    width: max-content;
+}
+
+/* Accessibility skip link */
+.skip-link {
+    left: 0;
+    padding: 10px;
+    position: absolute;
+    top: -100px;
+    z-index: 1;
+
+    &:focus {
+        top: 0;
+    }
+}
+
+/* Headings / text utilities */
+h1 {
+    margin: 0;
+}
+
+h2 {
+    border-bottom: 2px solid var(--t-main);
+}
+
+h3 {
+    color: var(--c-main);
+}
+
+.center {
+    text-align: center;
+}
+
+.icon {
+    vertical-align: middle;
+}
+
+.main {
+    color: var(--c-main);
+    width: calc(100% - 20px);
+}
+
+.on {
+    color: var(--i-on);
+}
+
+.off {
+    color: var(--i-off);
+}
+
+.b {
+    color: var(--t-focus);
+    font-weight: bold;
+    text-shadow: 0 0 0.1em var(--t-focus-shadow);
+}
+
+.i {
+    font-style: italic;
+}
+
+.u {
+    text-decoration: underline;
+}
+
+.cross {
+    text-decoration: line-through;
+}
+
+.lg {
+    font-size: larger;
+}
+
+.sm {
+    font-size: small;
+}
+
+.ssm {
+    font-size: x-small;
+}
+
+.false-link {
+    color: var(--t-link);
+    text-shadow: none;
+}
+
+/* Reusable small helpers */
+.hint-label {
+    margin-bottom: 0;
+}
+
+.hint {
+    background-color: var(--b-code);
+    color: var(--b-code);
+    height: 10px;
+    margin-top: 0;
+    overflow: hidden;
+    transition: height 1.5s ease 1s, color 1.5s linear 1s;
+
+    &:hover {
+        color: var(--t-main);
+        height: fit-content;
+    }
+}

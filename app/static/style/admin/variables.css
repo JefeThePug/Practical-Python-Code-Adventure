@@ -1,0 +1,31 @@
+:root {
+    --text: #f9fafb;
+    --light-text: #939393;
+    --title-text: #60a8f0;
+    --bg: #1f2933;
+    --light-bg: #2b505e;
+    --dark-bg: #161f25;
+    --select: #ff3355;
+}
+
+p {
+    margin: 0;
+}
+
+.b {
+    font-weight: bolder;
+}
+
+.ssm {
+    font-size: x-small !important;
+}
+
+.sm {
+    font-size: small !important;
+}
+
+.blue {
+    color: var(--title-text) !important;
+    margin-left: 15px;
+    transform: none !important;
+}

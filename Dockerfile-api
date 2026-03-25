@@ -1,16 +1,24 @@
-FROM python:3.12.8-slim-bullseye
+FROM python:3.12-slim-bookworm
 
-WORKDIR /website
+# Update OS packages and remove cache to reduce image size
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY /website /website
+WORKDIR /app
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    chmod +x /website/entrypoint.sh
+# Install uv
+RUN pip install --no-cache-dir uv
 
-# Install requirements with pip cache for efficiency
-RUN --mount=type=cache,target=/root/.cache/pip pip install --no-cache-dir -r /website/requirements.txt
+# Copy & install dependencies
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --system
+
+COPY . .
+
+RUN chmod +x entrypoint.sh
 
 EXPOSE 5000
 
-CMD ["/website/entrypoint.sh"]
+CMD ["./entrypoint.sh"]

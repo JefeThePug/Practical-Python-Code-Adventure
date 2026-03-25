@@ -1,0 +1,66 @@
+{% extends "default.html" %}
+
+{% block title %} Challenge Champions {% endblock %}
+
+{% block main %}
+<section class="section" id="announcement">
+  <div class="img-container">
+    <img src="{{ url_for('static', filename='images/good_job.png') }}" alt="Congratulations Image">
+  </div>
+  <div>
+    <h2>Congratulations</h2>
+    <h3>{{ year }} Champions</h3>
+    <p>everyone who completed both parts of all 10 weeks!</p>
+
+    <ul>
+    {% for i in range(champions|length) %}
+      <li>
+        {% if githubs[i] %}
+        <a href="https://github.com/{{ githubs[i] }}" target="_blank" rel="noopener noreferrer nofollow" >
+          {{ champions[i] }} <i class="devicon-github-original"></i>
+        </a>
+        {% else %}
+        <span class="false-link">
+            {{ champions[i] }}
+        </span>
+        {% endif %}
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+</section>
+<section class="section" id="all_scores">
+  <div id="score-dialog-root"></div>
+  <div>
+    <h2>All Progress</h2>
+    <table>
+      <tr>
+        <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+        <td>6</td><td>7</td><td>8</td><td>9</td><td>10</td>
+        <td style="border-right:none; text-align:center;">User</td>
+      </tr>
+    {% for item in all_data %}
+    <tr>
+      {% for week in item.progress %}
+        <td>
+        {%- for c in week -%}
+          <span class="{{ 'off' if c == '☆' else 'on' }} lg">{{ c }}</span>
+        {%- endfor -%}
+        </td>
+      {% endfor %}
+      <td style="border-right:none; text-align:left;">
+        <span class="b {{ 'false-link' if item.id == session.get('user_data', {}).get('id') else '' }}">
+          {{ item.name }}
+        </span>
+      </td>
+    </tr>
+    {% endfor %}
+    </table>
+  </div></br>
+  <p>
+    <button onclick="location.href='/'">
+      Home
+    </button>
+  </p>
+</section>
+{% endblock %}

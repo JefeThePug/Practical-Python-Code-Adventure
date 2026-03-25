@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Practical Python Code Adventure</title>
+    {%- for style in css_files %}
+    <link
+      href="{{ url_for('static', filename='style/' ~ style ~ '.css') }}"
+      rel="stylesheet"
+      type="text/css"
+    />
+    {%- endfor %}
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="{{ url_for('static', filename='favicon.svg') }}"
+      rel="icon"
+      type="image/svg+xml"
+    />
+    <link href="{{ url_for('static', filename='favicon.ico') }}" rel="icon" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to Main content</a>
+
+    <nav class="navbar">
+      <div class="nav">
+        {% if request.endpoint != 'main.release' %}
+        <a href="{{ url_for('main.index') }}">
+          <span class="material-symbols-outlined"> home </span>
+          <span class="nav-text">Home</span>
+        </a>
+        {% endif %} {% if request.endpoint == 'main.release' %}
+        <div class="false-link year-menu">
+          <span class="material-symbols-outlined"> calendar_clock </span>
+          <span class="nav-text">{{ year }}</span>
+          <div class="dropdown">
+            <a href="{{ url_for('main.release', year=2026) }}"
+              ><p><span>2026</span></p></a
+            >
+            <a href="{{ url_for('main.release', year=2025) }}"
+              ><p><span>2025</span></p></a
+            >
+          </div>
+        </div>
+        {% endif %} {% if request.endpoint != 'routes.how_to' %}
+        <a href="{{ url_for('routes.how_to') }}">
+          <span class="material-symbols-outlined"> help </span>
+          <span class="nav-text">How-To</span>
+        </a>
+        {% endif %} {% if request.endpoint != 'routes.champions' %}
+        <a href="{{ url_for('routes.champions') }}">
+          <span class="material-symbols-outlined"> trophy </span>
+          <span class="nav-text">Champions</span>
+        </a>
+        {% endif %} {% if request.endpoint != 'routes.gratitude' %}
+        <a href="{{ url_for('routes.gratitude') }}">
+          <span class="material-symbols-outlined"> favorite </span>
+          <span class="nav-text">Gratitude</span>
+        </a>
+        {% endif %} {% if request.endpoint != 'routes.sponsor' %}
+        <a href="{{ url_for('routes.sponsor') }}">
+          <span class="material-symbols-outlined"> star_shine </span>
+          <span class="nav-text">Sponsors</span>
+        </a>
+        {% endif %}
+        <a href="{{ url_for('auth.pre_login') }}">
+          <div class="user-menu">
+            {% if session.get("user_data") %} {% if img.startswith('http') %} {%
+            set img_src = img %} {% else %} {% set img_src = url_for('static',
+            filename='images/no_img.png') %} {% endif %}
+            <img alt="Logout" src="{{ img_src }}" />
+            <span class="material-symbols-outlined user-action"
+              >emoji_people</span
+            >
+            <span class="user-action">Logout</span>
+            {% else %}
+            <span class="material-symbols-outlined user-label"
+              >emoji_people</span
+            >
+            <span class="user-label">Guest</span>
+            <span class="material-symbols-outlined user-action"
+              >emoji_people</span
+            >
+            <span class="user-action">Login</span>
+            {% endif %}
+          </div>
+        </a>
+      </div>
+    </nav>
+
+    <header class="section">
+      <h1>{% block title %}{% endblock %}</h1>
+    </header>
+
+    <main id="main-content">{% block main %} {% endblock %}</main>
+  </body>
+</html>

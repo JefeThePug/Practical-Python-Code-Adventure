@@ -1,0 +1,86 @@
+{% extends "admin/iframe.html" %}
+
+{% block content %}
+<section>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for _, message in messages %}
+    <p class="b alert">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form class="sponsor grid-form" action="/admin/sponsors" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% for t in (t1, t2, t3) %}
+        {% set tier = loop.index0 %}
+        {% set tier_name = "t" ~ loop.index %}
+        <h2>Tier {{ loop.index }}</h2>
+
+        <div class="form-group">
+            {% set cols = contents[loop.index0]|length - (3 if tier == 2 else 2) %}
+            <div class="input-grid" style="--cols: {{ cols }};">
+
+                {% for c in contents[loop.index0] %}
+                {% if c != 'blurb' %}
+                <div class="grid-header">{{ c|upper }}</div>
+                {% endif %}
+                {% endfor %}
+                <div class="grid-header">DISABLED</div>
+
+                {% for row in t %}
+                {% set index = loop.index0 %}
+                <input type="hidden" name="id_{{ tier*100 + index }}" value="{{ row['id'] }}">
+                <input type="hidden" name="bucket_{{ tier*100 + index }}" value="{{ tier_name }}">
+                {% for c in contents[tier] %}
+                {% if c != 'blurb' %}
+                {% if c == 'type' %}
+                <select name="{{ c ~ '_' ~ (tier*100 + index) }}">
+                    {% for opt in ["", "wayfarer", "pathfinder", "explorer", "pioneer"] %}
+                    <option value="{{ opt }}" {{ "selected" if row[c] == opt else "" }}>
+                        {{ opt }}
+                    </option>
+                    {% endfor %}
+                </select>
+                {% else %}
+                <input type="text" name="{{ c ~ '_' ~ (tier*100 + index) }}" value="{{ row[c] if row[c] else '' }}">
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+                <input type="checkbox" name="disabled_{{ tier*100 + index }}" {{ 'checked' if row['disabled'] }}>
+                {% if tier == 2 %}
+                <textarea class="grid-full" name="blurb_{{ tier*100 + index }}" rows="5">{{ row['blurb'] }}</textarea>
+                {% endif %}
+                {% endfor %}
+
+                {% for i in range(t|length, t|length + (1 if tier == 2 else 3)) %}
+                <input type="hidden" name="id_{{ tier*100 + i }}" value="0">
+                <input type="hidden" name="bucket_{{ tier*100 + i }}" value="">
+                {% for c in contents[tier] %}
+                {% if c != 'blurb' %}
+                <input type="text" name="{{ c ~ '_' ~ (tier*100 + i) }}" value="">
+                {% endif %}
+                {% endfor %}
+                <input type="checkbox" name="disabled_{{ tier*100 + i }}">
+                {% if tier == 2 %}
+                <textarea class="grid-full" name="blurb_{{ tier*100 + i }}" rows="5"></textarea>
+                {% endif %}
+                {% endfor %}
+
+            </div>
+        </div>
+        <hr>
+        {% endfor %}
+
+        <div class="actions indent">
+            <a href="{{ url_for('admin.sponsor') }}">
+                <input type="button" value="CANCEL"/>
+            </a>
+            <input type="submit" value="SAVE">
+        </div>
+        <p class="indent blue sm" align="center">
+            To change tiers, first SAVE with new TYPE, then SAVE again with new fields added.
+        </p>
+    </form>
+</section>
+{% endblock %}

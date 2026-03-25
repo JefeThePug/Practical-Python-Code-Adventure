@@ -1,0 +1,204 @@
+/* Inputs, buttons, dialogs, code display blocks */
+input {
+    background: var(--b-main);
+    border: 1px solid var(--c-main);
+    color: var(--c-main);
+    font-size: large;
+    margin: 0;
+    padding: 0 2px;
+    box-sizing: border-box;
+
+    &::placeholder {
+        color: var(--c-main);
+    }
+
+    &:focus {
+        border-width: 2px;
+        outline: none;
+    }
+}
+
+.input {
+    width: 400px;
+}
+
+.right {
+    margin: 20px;
+    max-width: 800px;
+    text-align: right;
+}
+
+button {
+    background: none;
+    border: none;
+    white-space: nowrap;
+    color: var(--t-focus);
+    font-family: "Roboto Mono", monospace;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+
+    &::before {
+        font-size: 1.5em;
+        content: "{ ";
+    }
+
+    &::after {
+        font-size: 1.5em;
+        content: " }";
+    }
+}
+
+.access-button {
+    cursor: pointer;
+}
+
+/* Code blocks */
+.code {
+    background-color: var(--b-code);
+    border: none;
+    display: block;
+    font-family: "DejaVu Sans Mono", monospace;
+    font-size: large;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    max-height: 100px;
+    max-width: 400px;
+    overflow: hidden;
+    padding: 5px 10px;
+    text-overflow: ellipsis;
+    width: fit-content;
+    word-wrap: break-word;
+
+    &.attach {
+        margin-top: -10px;
+        text-align: left;
+    }
+
+    &.free {
+        max-height: none;
+        max-width: none;
+    }
+
+    &.sm {
+        font-size: small;
+    }
+
+    &.part.main {
+        width: fit-content;
+    }
+}
+
+.part {
+    display: inline-flex;
+    margin: 2px;
+    max-width: 100%;
+    padding: 2px;
+}
+
+.mono {
+    font-family: "DejaVu Sans Mono", monospace !important;
+}
+
+/* Dialogs */
+dialog {
+    background-color: var(--b-code);
+    border: 1px solid var(--c-main);
+    border-radius: 10px;
+    box-shadow: 0 0 1500px 1500px rgba(0, 0, 0, 0.8);
+    color: var(--c-main);
+    height: 100px;
+    left: 20px;
+    overflow: hidden;
+    padding: 20px;
+    position: fixed;
+    text-align: center;
+    top: 200px;
+    width: 300px;
+    z-index: 100;
+
+    &.end {
+        background-color: transparent !important;
+        border: none !important;
+        height: 800px;
+        left: 0;
+        outline: none !important;
+        padding: 0;
+        top: calc(50vh - 400px);
+        width: 800px;
+    }
+}
+
+/* Shimmer section */
+.shimmer {
+    --offset: 1px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px var(--c-main), inset 0 0 10px var(--c-main);
+    height: 30px;
+    margin-top: 30px;
+    width: 100%;
+    overflow: hidden;
+    padding: 20px 10px 40px 10px;
+    position: relative;
+
+    form {
+        border-radius: inherit;
+        inset: 0;
+        margin: 3px;
+        position: absolute;
+        z-index: 10;
+    }
+
+    input {
+        width: calc(100% - 180px);
+    }
+}
+
+.shimmer.short {
+    height: 0;
+}
+
+.form-box {
+    margin: 10px;
+}
+
+/* Image helpers */
+img {
+    max-height: 400px;
+    width: 60%;
+    height: auto;
+}
+
+.fill {
+    height: 80%;
+    max-height: none;
+    width: 80%;
+}
+
+.vsmallpic {
+    width: 50px;
+}
+
+.smallpic {
+    width: 150px !important;
+}
+
+.midspic {
+    width: 220px;
+}
+
+.midpic {
+    width: 285px !important;
+}
+
+.midlargepic {
+    width: 500px;
+}
+
+.widepic {
+    max-height: 80px;
+    max-width: 60vw;
+    height: auto;
+    width: auto;
+}

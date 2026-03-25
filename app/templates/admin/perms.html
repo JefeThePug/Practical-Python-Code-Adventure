@@ -1,0 +1,31 @@
+{% extends "admin/iframe.html" %}
+
+{% block content %}
+<section>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for _, message in messages %}
+    <p class="b alert">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form action="/admin/perms" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h2>Permissions</h2>
+        <div class="form-group">
+            <label for="perms">User IDs with Admin Permissions:</label><br>
+            <textarea class="full short" id="perms" name="perms"
+                      rows="{{ perms|length + 3 }}">{{ perms|join("\n") }}</textarea>
+        </div>
+        <hr>
+
+        <div class="actions indent">
+            <a href="{{ url_for('admin.perms') }}">
+                <input type="button" value="CANCEL"/>
+            </a>
+            <input type="submit" value="SAVE">
+        </div>
+    </form>
+</section>
+{% endblock %}

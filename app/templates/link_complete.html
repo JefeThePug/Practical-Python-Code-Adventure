@@ -1,0 +1,53 @@
+{% extends "default.html" %} {% block title %} Access Granted {% endblock %} {%
+block main %}
+<section class="section" id="announcement">
+  <div class="img-container">
+    {% set path = ['images', year, '%02d'|format(num), num ~ '.mp4'] | join('/')
+    %} {% set img_src = url_for('static', filename=path) %}
+    <video autoplay muted playsinline id="vid">
+      <source src="{{ img_src }}" type="video/mp4" />
+    </video>
+    <span
+      id="replay-btn"
+      class="material-symbols-outlined"
+      style="cursor: pointer"
+    >
+      replay
+    </span>
+    <script
+      src="{{ url_for('static', filename='js/replay.js') }}"
+      defer
+    ></script>
+  </div>
+  <div>
+    <p>
+      Well done! You solved both parts of Challenge {{ num }} and have gained
+      access to {{ year }}'s Week {{ num }} Discussion Channel.
+    </p>
+    <p>
+      Feel free to share your code and discuss what led you to the solutions for
+      both Part 1 and Part 2 there.
+    </p>
+    <p>
+      <a
+        class="access-button"
+        href="discord://discordapp.com/channels/{{ guild }}/{{ channel }}"
+      >
+        Visit the channel now
+      </a>
+      <span>or</span>
+      <button onclick="location.href = '/'">
+        Go back to solve more challenges
+      </button>
+    </p>
+  </div>
+</section>
+<section class="section" id="easter-egg">
+  <div>
+    <p class="sm">
+      <span class="material-symbols-outlined icon egg">egg</span>
+      <span class="egg">{{ egg|safe }}</span>
+    </p>
+  </div>
+</section>
+{% endblock %}

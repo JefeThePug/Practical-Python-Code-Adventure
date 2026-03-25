@@ -1,0 +1,73 @@
+{% extends "admin/iframe.html" %}
+
+{% block content %}
+<section>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for _, message in messages %}
+    <p class="b alert">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form action="/admin/discord" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h2>Guild</h2>
+        <div class="form-group">
+            <label for="guild">ID:</label>
+            <input id="guild" name="guild" value="{{ guild }}" type="text" required/>
+        </div>
+        <hr>
+
+        <h2>Verified Role</h2>
+        <div class="form-group">
+            <label for="role">ID:</label>
+            <input id="role" name="role" value="{{ role }}" type="text"/>
+        </div>
+        <hr>
+
+        <h2>Adventurer Role</h2>
+        <div class="form-group">
+            <label for="adventurer">ID:</label>
+            <input id="adventurer" name="adventurer" value="{{ adventurer }}" type="text"/>
+        </div>
+        <hr>
+
+        <h2>Channels</h2>
+        <div class="form-group">
+            <label for="year">Challenge Year:</label>
+            <select id="year" name="year" onchange="updateLocation()">
+                {% for y in years %}
+                <option value="{{ y }}" {{ 'selected' if y == selected_year }}>
+                    {{ y }}
+                </option>
+                {% endfor %}
+            </select>
+            <span class="alert">  ‼️Changing the year will discard any unsaved ID changes.</span>
+        </div>
+
+        {% for n in range(11) %}
+        <div class="form-group">
+            <label for="c{{ n }}">{{ 'Champion Role' if n == 0 else 'Week ' ~ n ~ ' Thread' }}:</label>
+            {% set c = channels[selected_year] %}
+            {% set key = 'champion' if n == 0 else n|string %}
+            {% set fill = c[key] if key in c else '' %}
+            <input id="c{{ n }}" name="c{{ n }}" value="{{ fill }}" type="text" required/>
+        </div>
+        {% endfor %}
+        <hr>
+
+        <div class="actions">
+            <input type="button" value="CANCEL" onclick="updateLocation()">
+            <input type="submit" value="SAVE">
+        </div>
+    </form>
+</section>
+
+<script>
+    function updateLocation() {
+        const year = document.getElementById('year').value;
+        window.location.href = "{{ url_for('admin.discord') }}?year=" + year;
+    }
+</script>
+{% endblock %}

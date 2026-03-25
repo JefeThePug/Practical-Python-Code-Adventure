@@ -1,0 +1,13 @@
+:root {
+    /* Transparencies */
+    --trans-50: rgba(0, 0, 0, 0.5);
+    --trans-80: rgba(0, 0, 0, 0.8);
+
+    /* Sponsor-specific gradients */
+    --degree: 0deg;
+    --basic-gradient: linear-gradient(var(--degree), #EACDA3, #D6AE7B);
+    --special-gradient: linear-gradient(var(--degree), #FF0000, #FDCF58);
+    --silver-gradient: linear-gradient(var(--degree), #70706F, #C0C0C0, #E3E3E3);
+    --gold-gradient: linear-gradient(var(--degree), #A57C01, #B79001, #FFDF01);
+    --soft-light: linear-gradient(var(--degree), rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35));
+}

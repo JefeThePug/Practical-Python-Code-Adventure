@@ -1,0 +1,195 @@
+{% extends "default.html" %} {% block title %} Partnerships and Sponsors {%
+endblock %} {% block main %}
+<section class="section" id="announcement">
+  <div class="img-container">
+    <img
+      src="{{ url_for('static', filename='images/sponsor.png') }}"
+      alt="Sponsor Image"
+    />
+  </div>
+  <div>
+    <h2>What We Are</h2>
+    <p>
+      Practical Python Code Adventure is a story-driven coding challenge site
+      focused on problem-solving and learning algorithms by doing, backed by
+      support of an educational Discord community.
+    </p>
+    <h2>How Can I Sponsor?</h2>
+    <p>
+      Sponsorships help support development, keep content accessible, and grow
+      the project. However, sponsors do not influence puzzle content, solutions,
+      or difficulty.
+    </p>
+    <p>
+      If you enjoy this project and want to support fun educational websites
+      like this, there are four different ways you can be a sponsor:
+    </p>
+    <ul class="tiers">
+      <li class="tier1-key">Tier 1: Wayfarer Level</li>
+      <ul class="u">
+        One Time Donation of $5+
+      </ul>
+      <ul>
+        <li>Your username is listed as a Wayfarer Level Patron</li>
+      </ul>
+      <li class="tier1plus-key">Tier 1+: Pathfinder Level</li>
+      <ul class="u">
+        One Time Donation of $20+
+      </ul>
+      <ul>
+        <li>Your username is listed as a Pathfinder Level Patron</li>
+        <li>
+          Your GitHub profile <i class="devicon-github-original"></i> is linked
+        </li>
+      </ul>
+      <li class="tier2-key">Tier 2: Explorer Level</li>
+      <ul class="u">
+        $84 Yearly Donation
+      </ul>
+      <ul>
+        <li>Recognition as an Explorer Level Patron</li>
+        <li>
+          Your company logo (up to 80px high × 100px wide) featured on the site
+          and linked to your website
+        </li>
+      </ul>
+      <li class="tier3-key">Tier 3: Pioneer Level</li>
+      <ul class="u">
+        $144 Yearly Donation
+      </ul>
+      <ul>
+        <li>Recognition as a Pioneer Level Patron</li>
+        <li>
+          Your company logo (up to 120px high × 300px wide) featured on the site
+          and linked to your website
+        </li>
+        <li>Up to 50-word company profile included with your logo</li>
+      </ul>
+    </ul>
+    <hr />
+    <p class="b">
+      Donations can be sent via
+      <a href="https://buymeacoffee.com/jefethepug">
+        my Buy Me A Coffee profile</a
+      >.
+    </p>
+    <p class="b">
+      Other inquiries can be sent via
+      <a href="mailto:jefethepug@protonmail.com">email</a>.
+    </p>
+  </div>
+</section>
+<section class="section" id="sponsors">
+  <h2>Sponsors</h2>
+  <div class="img-container">
+    <img
+      class="tier"
+      src="{{ url_for('static', filename='images/T3-Pioneer.png') }}"
+      alt="Tier3 Sponsors"
+    />
+  </div>
+  <div class="tier3-box">
+    {% if t3 %}
+    <ul class="tier3-lists">
+      {% for sponsor in t3 %}
+      <li class="pioneer">
+        <a href="{{ sponsor.website }}">
+          <div class="tier3-layout">
+            <div class="box-a">
+              <img
+                class="img-3"
+                src="{{ sponsor.image }}"
+                alt="{{ sponsor.name }}"
+              />
+            </div>
+            <div class="box-b">{{ sponsor.name }}</div>
+            <div class="box-c">{{ sponsor.blurb }}</div>
+          </div>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="center">
+      This space is waiting for its first <span class="b i">Pioneer</span>!
+    </p>
+    {% endif %}
+  </div>
+  <div class="img-container">
+    <img
+      class="tier"
+      src="{{ url_for('static', filename='images/T2-Explorer.png') }}"
+      alt="Tier2 Sponsors"
+    />
+  </div>
+  <div class="tier2-box">
+    {% if t2 %}
+    <ul class="tier2-lists">
+      {% for sponsor in t2 %}
+      <li class="explorer">
+        <a href="{{ sponsor.website }}">
+          <img
+            class="img-2"
+            src="{{ sponsor.image }}"
+            alt="{{ sponsor.name }}"
+          />
+          <p class="explorer-name">{{ sponsor.name }}</p>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="center">
+      This space is waiting for its first <span class="b i">Explorer</span>!
+    </p>
+    {% endif %}
+  </div>
+  <div class="img-container">
+    <img
+      class="tier"
+      src="{{ url_for('static', filename='images/T1-WayfarerPathfinder.png') }}"
+      alt="Tier1 Sponsors"
+    />
+  </div>
+  <div class="tier1-box">
+    {% if t1 %}
+    <ul class="tier1-lists">
+      {% for sponsor in t1 %}
+      <li class="{{ sponsor.type }}">
+        {% if sponsor.type == 'pathfinder' %}
+        <a href="{{ sponsor.website }}">
+          <p>{{ sponsor.name }} <i class="devicon-github-original"></i></p>
+        </a>
+        {% else %}
+        <p>{{ sponsor.name }}</p>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="center">
+      This space is waiting for its first <span class="b i">Pathfinder</span>!
+    </p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section" id="partner">
+  <div>
+    <h2>Partners</h2>
+    <h3>Practical Python</h3>
+    <p>
+      This site is in partnership with
+      <a href="https://github.com/practical-python-org"> Practical Python</a>. A
+      growing Discord community with staff and users dedicated to fostering an
+      environment of supportive learning and encouragement in not only the
+      Python programming language but also many other computer science topics
+      and DevOps.
+    </p>
+  </div>
+  <br />
+  <p>
+    <button onclick="location.href = '/'">Home</button>
+  </p>
+</section>
+{% endblock %}

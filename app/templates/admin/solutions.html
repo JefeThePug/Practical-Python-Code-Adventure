@@ -1,0 +1,56 @@
+{% extends "admin/iframe.html" %}
+
+{% block content %}
+<section>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for _, message in messages %}
+    <p class="b alert">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form action="/admin/solutions" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h2>Year</h2>
+        <div class="form-group">
+            <label for="year">Challenge Year:</label>
+            <select id="year" name="year" onchange="updateLocation()">
+                {% for y in years %}
+                <option value="{{ y }}" {{ 'selected' if y == selected_year }}>
+                    {{ y }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <p class="indent alert"> ‼️Changing the year will discard any unsaved solution changes.</p>
+
+        {% for n in range(1, 11) %}
+        <h2>Week {{ n }}</h2>
+        <hr>
+        {% set s=solutions[n] %}
+        <div class="form-group">
+            <label for="{{ n }}1">Part 1</label>
+            <input id="{{ n }}1" name="{{ n }}1" value="{{ s['part1'] }}" type="text"/>
+        </div>
+        <div class="form-group">
+            <label for="{{ n }}2">Part 2</label>
+            <input id="{{ n }}2" name="{{ n }}2" value="{{ s['part2'] }}" type="text"/>
+        </div>
+        {% endfor %}
+        <hr>
+
+        <div class="indent actions">
+            <input type="button" value="CANCEL" onclick="updateLocation()">
+            <input type="submit" value="SAVE">
+        </div>
+    </form>
+</section>
+
+<script>
+    function updateLocation() {
+        const year = document.getElementById('year').value;
+        window.location.href = "{{ url_for('admin.solutions') }}?year=" + year;
+    }
+</script>
+{% endblock %}

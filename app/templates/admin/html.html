@@ -1,0 +1,77 @@
+{% extends "admin/iframe.html" %}
+
+{% block content %}
+<section>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for _, message in messages %}
+    <p class="b alert">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form action="/admin/html" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h2>Year and Week</h2>
+        <hr>
+        <div class="form-group">
+            <label for="year">Challenge Year:</label>
+            <select id="year" name="year" onchange="updateLocation()">
+                {% for y in years %}
+                <option value="{{ y }}" {{ 'selected' if y == selected_year }}>
+                    {{ y }}
+                </option>
+                {% endfor %}
+            </select>
+            <label for="week">Week Number:</label>
+            <select id="week" name="week" onchange="updateLocation()">
+                {% for w in range(1, 11) %}
+                <option value="{{ w }}" {{ 'selected' if w == selected_week }}>
+                    Week {{ w }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <p class="indent alert"> ‼️Changing the year/week will discard any unsaved HTML changes.</p>
+
+        {% for part in range(1, 3) %}
+        <h2>Part {{ part }}</h2>
+        <hr>
+        {% set sizes = (1, 10, 5, 1, 7, 7) %}
+        {% for field in fields %}
+        {% set size = sizes[loop.index0] %}
+        <div class="form-group">
+            <label for="{{ field ~ part }}">{{ field | capitalize }}:</label>
+            <textarea id="{{ field ~ part }}" name="{{ field ~ part }}"
+                      rows="{{ size }}" class="full">{{ data[part][field] }}</textarea>
+        </div>
+        {% endfor %}
+        {% endfor %}
+
+        <hr>
+        <div class="form-group">
+            <label for="easter-egg">EE:</label>
+            <textarea id="easter-egg" name="easter-egg" rows="1" class="full">{{ egg }}</textarea>
+        </div>
+        <hr>
+
+        <div class="indent actions">
+            <input type="button" value="CANCEL" onclick="updateLocation()">
+            <input type="button" value="print" class="blue material-symbols-outlined"
+                   onclick="this.form.action='/admin/html/print'; this.form.submit();">
+            <input type="submit" value="SAVE">
+        </div>
+        <p class="indent blue sm" align="center">
+            SAVE BEFORE CLICKING THIS BUTTON
+        </p>
+    </form>
+</section>
+
+<script>
+    function updateLocation() {
+        const year = document.getElementById('year').value;
+        const week = document.getElementById('week').value;
+        window.location.href = "{{ url_for('admin.html') }}?year=" + year + "&week=" + week;
+    }
+</script>
+{% endblock %}

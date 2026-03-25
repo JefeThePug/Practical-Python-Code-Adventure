@@ -1,0 +1,24 @@
+{% extends "default.html" %}
+
+{% block title %} Logout {% endblock %}
+
+{% block main %}
+<section class="section" id="announcement">
+    <div class="img-container">
+        <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Logout Image">
+    </div>
+    <div>
+        <h2>Logout of Your Account</h2>
+        <div>
+            <h3>Are you sure you want to Logout?</h3>
+            <button onclick="location.href='/logout'">Yes</button>
+            <button onclick="location.href='/'">No</button>
+        </div>
+    </div></br>
+    <p>
+        <button onclick="location.href='/'">
+            Home
+        </button>
+    </p>
+</section>
+{% endblock %}
