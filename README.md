@@ -1,8 +1,8 @@
-# Practical Python Coding Adventure
+# Practical Python Code Adventure
 
 **Live at:** [https://adventure.practicalpython.org](https://adventure.practicalpython.org)
 
-**Coding Adventure** is a series of 10 interactive coding challenges (each with two parts), inspired by [Advent of Code](https://adventofcode.com/). Built with Flask, PostgreSQL, and Docker, the app is designed for members of the Practical Python Discord community. Solving both parts of a challenge grants access to a private discussion thread where participants can share their solutions and strategies.
+**Code Adventure** is a series of 10 interactive coding challenges (each with two parts), inspired by [Advent of Code](https://adventofcode.com/). Built with Flask, PostgreSQL, and Docker, the app is designed for members of the Practical Python Discord community. Solving both parts of a challenge grants access to a private discussion thread where participants can share their solutions and strategies.
 
 The project is containerized and deployed on an AWS EC2 instance.
 
@@ -76,8 +76,8 @@ postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@<POSTGRES_SERVER>:<POSTGRES_POR
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/JefeThePug/Zorak-Coding-Challenges.git
-   cd Zorak-Coding-Challenges
+   git clone https://github.com/JefeThePug/Practical-Python-Code-Adventure.git
+   cd Practical-Python-Code-Adventure
    ```
 
 2. **Install dependencies**:
