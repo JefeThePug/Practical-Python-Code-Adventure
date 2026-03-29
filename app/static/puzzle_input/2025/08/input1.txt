@@ -11,14 +11,14 @@ Norfolk Island,Arabica,French,27,175
 Faroe Islands,Excelsa,Light,146,129
 Faroe Islands,Arabica,Medium,113,162
 Namibia,Typica,Blonde,90,197
-Poland,Liberica,French,57,142
+Liberia,Liberica,French,57,142
 Barbados,Typica,French,98,117
 Northern Mariana Islands,Arabica,French,91,112
 Niger,Excelsa,Light,47,163
 Colombia,Robusta,French,153,111
 Kyrgyzstan,Robusta,Light,122,170
 Bulgaria,Robusta,Blonde,60,149
-Botswana,Excelsa,Medium,35,184
+Ethiopia,Excelsa,Medium,35,184
 China,Typica,French,55,152
 Guernsey,MundoNovo,French,84,56
 Indonesia,Robusta,Blonde,121,190
@@ -33,7 +33,7 @@ Guatemala,Typica,Blonde,90,113
 Japan,Typica,Medium,105,132
 Armenia,Arabica,French,171,98
 Monaco,MundoNovo,Light,106,172
-Peru,Typica,Dark,35,155
+Uganda,Typica,Dark,35,155
 Georgia,Typica,Blonde,48,81
 Cook Islands,Typica,Dark,124,88
 Norfolk Island,Typica,Blonde,101,56
@@ -42,16 +42,16 @@ Pakistan,MundoNovo,Blonde,152,146
 Armenia,Typica,Blonde,136,168
 Iceland,Robusta,Medium,60,159
 Marshall Islands,Excelsa,Light,154,160
-Ethiopia,Robusta,Blonde,52,195
+Namibia,Robusta,Blonde,52,195
 Jordan,Typica,Light,70,184
 United Arab Emirates,Excelsa,Blonde,30,56
-Uganda,Arabica,Dark,30,176
+Botswana,Arabica,Dark,30,176
 Papua New Guinea,MundoNovo,Dark,14,41
 Honduras,Excelsa,Dark,108,172
 Marshall Islands,MundoNovo,Dark,100,143
 Czech Republic,Typica,Medium,74,170
 Aruba,Excelsa,Light,91,89
-Slovakia,MundoNovo,Light,90,99
+Algeria,MundoNovo,Light,90,99
 Angola,Arabica,French,31,22
 Madagascar,Robusta,French,42,123
 Kazakhstan,Excelsa,Blonde,135,73
