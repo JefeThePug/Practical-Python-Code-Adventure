@@ -7,12 +7,12 @@ from pathlib import Path
 
 import requests
 import yaml
+from cryptography.exceptions import InvalidTag
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM as Encryption
 from dotenv import load_dotenv
 from flask import Flask
 from sqlalchemy import create_engine, event, text
 from sqlalchemy.exc import SQLAlchemyError
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM as Encryption
-from cryptography.exceptions import InvalidTag
 
 load_dotenv(Path(__file__).resolve().parent / ".env")
 

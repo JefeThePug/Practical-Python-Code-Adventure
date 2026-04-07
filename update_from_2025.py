@@ -5,9 +5,10 @@ import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, text
 from flask import Flask
-from app.models import db, User, Progress
+from sqlalchemy import create_engine, text
+
+from app.models import Progress, User, db
 
 load_dotenv(Path(__file__).resolve().parent / ".env")
 
