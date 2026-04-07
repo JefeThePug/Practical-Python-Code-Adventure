@@ -95,7 +95,7 @@ def discord():
             },
             "0": {
                 key: request.form.get(key, "").strip()
-                for key in ("guild", "role", "adventurer")
+                for key in ("guild", "adventurer")
             },
         }
         app.data_cache.admin.update_discord(values)
@@ -106,7 +106,6 @@ def discord():
         years=years,
         selected_year=selected_year,
         guild=main["guild"],
-        role=main["role"],
         adventurer=main["adventurer"],
         channels=channels,
     )

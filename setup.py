@@ -185,7 +185,6 @@ def fill_permanent_data(admin_id):
         if "discord_ids" in table_names and not db.session.query(DiscordID).first():
             discord_ids = [
                 DiscordID(year="0", name="guild", discord_id=""),  # type: ignore
-                DiscordID(year="0", name="role", discord_id=""),  # type: ignore
                 DiscordID(year="0", name="adventurer", discord_id=""),  # type: ignore
                 *[
                     DiscordID(
