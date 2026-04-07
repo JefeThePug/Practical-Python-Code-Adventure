@@ -67,7 +67,7 @@ DATABASE_NAME="YOUR_DB_NAME"
 
 # Flask
 FLASK_PORT=5000
-FLASK_ENV="production"  # or "development"
+FLASK_ENV="production"  # or  development
 SECRET_KEY="Something_secret_goes_here"
 
 # Discord
@@ -78,8 +78,9 @@ DISCORD_CLIENT_SECRET="YOUR_CLIENT_SECRET"
 DISCORD_BOT_TOKEN="YOUR_BOT_TOKEN"
 
 # DB Setup in Docker Container
-SETUP_TYPE="setup"   # To setup a new blank DB
+SETUP_TYPE="setup"   # To setup a new blank db
 #SETUP_TYPE="update" # To update from the 2025 DB without clearing user progress
+#SETUP_TYPE="none"   # To start the Docker container without doing anything to the db
 
 # Latest Year
 YEAR=2026
@@ -97,7 +98,7 @@ KEY2026="DIFFERENT_KEY_HERE"
 > **DISCORD_ADMIN_USER_ID** – Your Discord user ID for admin dashboard access.  
 > **DISCORD\_\* tokens** – OAuth2 credentials for authentication and bot access.
 
-> **SETUP_TYPE** – `setup` = new DB, `update` = migrate from 2025 DB without clearing progress.
+> **SETUP_TYPE** – `setup` = new DB, `update` = migrate from 2025 DB without clearing progress, `none` = no DB changes.
 
 > **YEAR** – Latest challenge year to include (starting from 2025). _Must not exceed released years_.  
 > **KEY####** – Required key to access each year’s challenge and solution data to fill the DB.
@@ -118,7 +119,7 @@ cd Zorak-Coding-Challenges
 2. **Install dependencies with uv**:
 
 ```bash
-uv sync --frozen --no-dev --system
+uv sync --frozen --no-dev
 ```
 
 3. **Run the initial setup**:
