@@ -127,11 +127,12 @@ def access():
 
     guild_id = app.data_cache.admin.discord_ids["0"]["guild"]
     user_id = user["id"]
+    in_guild = True
     channel_id = app.data_cache.admin.discord_ids[year][f"{num}"]
-    verified_role = app.data_cache.admin.discord_ids["0"]["role"]
+
     adventurer_role = app.data_cache.admin.discord_ids["0"]["adventurer"]
-    roles_to_add = [verified_role, adventurer_role]
-    if all(all(r) for r in user["rockets"]):
+    roles_to_add = [adventurer_role]
+    if user["rockets"] and all(all(r) for r in user["rockets"]):
         champion_role = app.data_cache.admin.discord_ids[year]["champion"]
         roles_to_add.append(champion_role)
 
@@ -139,50 +140,40 @@ def access():
     url = f"https://discord.com/api/v9/guilds/{guild_id}/members/{user_id}"
     response = requests.get(url, headers=headers)
 
-    # User is not a member of the guild, add them with roles
     if response.status_code == 404:
-        join_payload = {
-            "access_token": session["token"],
-            "roles": roles_to_add,
-        }
-        try:
-            put_res = requests.put(url, headers=headers, json=join_payload)
-            put_res.raise_for_status()
-        except requests.exceptions.RequestException as e:
-            return f"Error: Failed to join/assign role: {e}", 400
-
-    # User IS a member of the guild, add roles
+        in_guild = False
     elif response.status_code == 200:
         member_data = response.json()
-        current_roles = member_data.get("roles", [])
-        updated_roles = list(set(current_roles + roles_to_add))
-        try:
-            patch_res = requests.patch(
-                url, headers=headers, json={"roles": updated_roles}
-            )
-            patch_res.raise_for_status()
-        except requests.exceptions.RequestException as e:
-            return f"Failed to update roles: {e}", 400
+        current_roles = set(member_data.get("roles", []))
 
+        for role in roles_to_add:
+            if role in current_roles:
+                continue
+            try:
+                res = requests.put(f"{url}/roles/{role}", headers=headers)
+                res.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                return f"Failed to update roles: {e}", 400
     else:
         return f"Unexpected error: {response.status_code}", response.status_code
 
-    content = (
-        f"<@{user_id}> solved week {num}! If you'd like, "
-        "please share how you arrived at the correct answer!"
-    )
-    url = f"https://discord.com/api/v9/channels/{channel_id}"
-    member_url = f"{url}/thread-members/{user_id}"
-    msg_url = f"{url}/messages"
-    response = requests.get(member_url, headers=headers)
-    if response.status_code == 404:
-        # User not in thread
-        try:
-            requests.put(member_url, headers=headers).raise_for_status()
-            res = requests.post(msg_url, headers=headers, json={"content": content})
-            res.raise_for_status()
-        except requests.exceptions.RequestException as e:
-            exception("Thread Message Error", e)
+    if in_guild:
+        content = (
+            f"<@{user_id}> solved week {num}! If you'd like, "
+            "please share how you arrived at the correct answer!"
+        )
+        url = f"https://discord.com/api/v9/channels/{channel_id}"
+        member_url = f"{url}/thread-members/{user_id}"
+        msg_url = f"{url}/messages"
+        response = requests.get(member_url, headers=headers)
+        if response.status_code == 404:
+            # User not in thread
+            try:
+                requests.put(member_url, headers=headers).raise_for_status()
+                res = requests.post(msg_url, headers=headers, json={"content": content})
+                res.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                exception("Thread Message Error", e)
 
     egg = app.data_cache.html.html[year][num]["ee"]
 
@@ -193,5 +184,6 @@ def access():
         num=num,
         guild=guild_id,
         channel=channel_id,
+        in_guild=in_guild,
         egg=egg,
     )

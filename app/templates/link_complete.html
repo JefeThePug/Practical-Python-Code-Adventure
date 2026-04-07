@@ -19,16 +19,34 @@ block main %}
       defer
     ></script>
   </div>
+
   <div>
+    <p>Well done! You solved both parts of Challenge {{ num }}</p>
+
+    {% if in_guild %}
     <p>
-      Well done! You solved both parts of Challenge {{ num }} and have gained
-      access to {{ year }}'s Week {{ num }} Discussion Channel.
+      You have gained access to {{ year }}'s Week {{ num }} Discussion Channel.
     </p>
     <p>
       Feel free to share your code and discuss what led you to the solutions for
       both Part 1 and Part 2 there.
     </p>
+    {% else %}
     <p>
+      To access {{ year }}'s Week {{ num }} Discussion Channel, you must be a
+      member of
+      <a href="https://discord.gg/H2V9Fd2sfD" target="_blank"
+        >the Practical Python server</a
+      >.
+    </p>
+    <p>Please join the server, then click below to gain access:</p>
+    <form id="access" action="/access" method="post">
+      <button class="access-button">Click Here</button>
+    </form>
+    {% endif %}
+
+    <div>
+      {% if in_guild %}
       <a
         class="access-button"
         href="discord://discordapp.com/channels/{{ guild }}/{{ channel }}"
@@ -36,10 +54,12 @@ block main %}
         Visit the channel now
       </a>
       <span>or</span>
+
+      {% endif %}
       <button onclick="location.href = '/'">
         Go back to solve more challenges
       </button>
-    </p>
+    </div>
   </div>
 </section>
 <section class="section" id="easter-egg">
