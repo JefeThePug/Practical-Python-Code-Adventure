@@ -12,13 +12,13 @@ if [ "$SETUP_TYPE" = "setup" ] || [ "$SETUP_TYPE" = "update" ]; then
     echo "Running $SETUP_TYPE..."
 
     if [ "$SETUP_TYPE" = "setup" ]; then
-        python setup.py "$DISCORD_ADMIN_USER_ID"
+        uv run python setup.py "$DISCORD_ADMIN_USER_ID"
     else
-        python update_from_2025.py "$DISCORD_ADMIN_USER_ID"
+        uv run python update_from_2025.py "$DISCORD_ADMIN_USER_ID"
     fi
 else
     echo "No DB setup action (SETUP_TYPE=$SETUP_TYPE)"
 fi
 
 echo "Starting gunicorn..."
-exec gunicorn --bind 0.0.0.0:${FLASK_PORT} app.run:app
+exec uv run gunicorn --bind 0.0.0.0:${FLASK_PORT} app.run:app
