@@ -38,7 +38,7 @@ def login():
         "client_id": os.getenv("DISCORD_CLIENT_ID"),
         "redirect_uri": os.getenv("DISCORD_REDIRECT_URI"),
         "response_type": "code",
-        "scope": "identify guilds.members.read guilds.join",
+        "scope": "identify",
     }
     return redirect(f"https://discord.com/api/oauth2/authorize?{urlencode(params)}")
 
