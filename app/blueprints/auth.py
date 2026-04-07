@@ -12,7 +12,13 @@ from flask import (
 )
 
 from app.appctx import exception, get_app, warning
-from app.services import exchange_code, get_progress, sync_progress
+from app.services import (
+    exchange_code,
+    get_avatar_url,
+    get_progress,
+    get_user_data,
+    sync_progress,
+)
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -50,7 +56,6 @@ def callback():
         Redirect to the index page or error message.
         or Error message with HTTP status code 400.
     """
-    print("\n\nin callback\n\n")
     if request.args.get("error"):
         exception(f"Request Error (/callback): {request.args}")
         return redirect(url_for("main.index"))
@@ -67,27 +72,19 @@ def callback():
     session.permanent = True
     session["token"] = token
 
-    headers = {"Authorization": f"Bearer {token}"}
-    response = requests.get("https://discord.com/api/users/@me", headers=headers)
-    if response.status_code != 200:
-        return "Error: No Response", 400
-
-    if not (user_data := response.json()):
+    try:
+        user_data = get_user_data(token)
+    except requests.exceptions.RequestException as e:
+        return f"Error: Failed to fetch user data: {e}", 400
+    if not user_data:
         return "Error: No user data received", 400
     session["user_data"] = user_data
-
-    # Get Discord profile picture for user
-    user_id = user_data["id"]
-    avatar_hash = user_data["avatar"]
-    avatar_url = "images/no_img.png"
-    if avatar_hash:
-        file_type = ["png", "gif"][avatar_hash.startswith("a_")]
-        avatar_url = (
-            f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.{file_type}"
-        )
-    session["user_data"]["img"] = avatar_url
+    session["user_data"]["img"] = get_avatar_url(user_data)
 
     # Add to database if not present
+    user_id = user_data.get("id")
+    if not user_id:
+        return "Error: Invalid user data", 400
     progress = get_app().data_cache.load_progress(session["year"], user_id)
     print(f"\n\n{progress}\n\n")
     if not progress:

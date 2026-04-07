@@ -29,3 +29,21 @@ def exchange_code(code: str) -> dict:
     )
 
     return response.json()
+
+
+def get_avatar_url(user_data: dict) -> str:
+    """"""
+    avatar_hash = user_data.get("avatar")
+    if not avatar_hash:
+        return "images/no_img.png"
+
+    ext = "gif" if avatar_hash.startswith("a_") else "png"
+    return f"https://cdn.discordapp.com/avatars/{user_data['id']}/{avatar_hash}.{ext}"
+
+
+def get_user_data(token: str) -> dict:
+    """"""
+    headers = {"Authorization": f"Bearer {token}"}
+    res = requests.get("https://discord.com/api/users/@me", headers=headers)
+    res.raise_for_status()
+    return res.json()
