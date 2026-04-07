@@ -192,3 +192,4 @@ Temporary Items
 encrypt.py
 encrypted.txt
 /.vscode
+postgres-data/
