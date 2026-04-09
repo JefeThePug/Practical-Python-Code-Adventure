@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from flask import Flask
 from sqlalchemy import create_engine, text
 
-from app.models import DiscordID, Progress, User, db
+from app.models import DiscordID, Progress, Release, User, db
 
 load_dotenv(Path(__file__).resolve().parent / ".env")
 
@@ -27,10 +27,10 @@ DATABASE_URL = (
 def main():
     admin_id = check_args()
     engine = create_engine(DATABASE_URL)
-    progress, discord = fetch_old_data(engine)
+    progress, discord, release = fetch_old_data(engine)
     drop_tables(engine)
     run_setup(admin_id)
-    migrate_user_data(progress, discord)
+    migrate_user_data(progress, discord, release)
 
 
 def check_args():
@@ -48,8 +48,13 @@ def fetch_old_data(engine):
         discord_result = conn.execute(text("SELECT * FROM discord_ids"))
         progress = [dict(row._mapping) for row in progress_result]
         discord = [dict(row._mapping) for row in discord_result]
-    print(f"Fetched {len(progress)} progress rows and {len(discord)} discord IDs.")
-    return progress, discord
+        release_value = (
+            conn.execute(text("SELECT release.release FROM release")).scalar() or 0
+        )
+    print(
+        f"Fetched {len(progress)} progress rows, {len(discord)} Discord IDs, and 2025 release."
+    )
+    return progress, discord, release_value
 
 
 def drop_tables(engine):
@@ -85,7 +90,7 @@ def run_setup(admin_id: str):
     )
 
 
-def migrate_user_data(old_progress, old_discord):
+def migrate_user_data(old_progress, old_discord, release_num):
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
     db.init_app(app)
@@ -99,9 +104,9 @@ def migrate_user_data(old_progress, old_discord):
 
     progress_skipped = 0
     progress_migrated = 0
-    discord_migrated = 0
 
     with app.app_context():
+        # Add users with progress
         for row in old_progress:
             if all(parse(row.get(f"c{i}")) == [False, False] for i in range(1, 11)):
                 progress_skipped += 1
@@ -127,18 +132,21 @@ def migrate_user_data(old_progress, old_discord):
             db.session.add(progress)
             progress_migrated += 1
 
+        # Update previous Discord IDs and 2025 release number
         for row in old_discord:
-            discord = DiscordID(
-                year=row.get("year", ""),  # type: ignore
-                name=row.get("name", ""),  # type: ignore
-                discord_id=row.get("discord_id", ""),  # type: ignore
+            name = row.get("name", "")
+            year = "0" if name == "guild" else "2025"
+            db.session.query(DiscordID).filter_by(year=year, name=name).update(
+                {"discord_id": row.get("discord_id", "")}
             )
-            db.session.add(discord)
-            discord_migrated += 1
+
+        db.session.query(Release).filter_by(year="2025").update(
+            {"release_number": release_num}
+        )
 
         db.session.commit()
-    print(f"Migrated: {progress_migrated} users and {discord_migrated} discord IDs")
-    print(f"Skipped (no progress): {progress_skipped}")
+    print(f"Migrated: {progress_migrated} users, all discord IDs, and 2025 Release")
+    print(f"Users skipped (due to no challenge progress): {progress_skipped}")
 
 
 if __name__ == "__main__":
