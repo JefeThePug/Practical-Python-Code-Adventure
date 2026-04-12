@@ -1,0 +1,22 @@
+---
+# Copy this file to docker-compose.override.yml for local development.
+# Docker Compose merges it automatically on `docker compose up`.
+#
+# This enables hot-reload via the Flask dev server — code changes in app/
+# are reflected instantly without rebuilding the image.
+#
+# To run in production mode locally (gunicorn, no hot-reload):
+#   docker compose -f docker-compose.yml up --build
+
+services:
+  api:
+    command: uv run python -m flask run --host=0.0.0.0 --port=${FLASK_PORT:-5000} --reload
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.run:app
+      - SETUP_TYPE=none
+    volumes:
+      - ./app:/app/app:ro
+    healthcheck:
+      disable: true
+    restart: "no"
