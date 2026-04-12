@@ -1,9 +1,36 @@
+# Version control
+.git
+.gitignore
+
+# Docker files
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Environment and secrets
+.env
+.env.*
+
+# Python artifacts
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.env
-.git
-.gitignore
-Dockerfile*
+.venv/
+
+# Data and logs
+postgres-data/
 *.log
+
+# IDE and tooling
+.vscode/
+.idea/
+.claude/
+
+# Documentation
+*.md
+LICENSE
+
+# OS files
+.DS_Store
+Thumbs.db

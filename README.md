@@ -139,15 +139,35 @@ python -m app.run
 
 ### Running with Docker
 
-1. **Build and start containers**:
+1. **Copy the example files** and fill in your values:
 
 ```bash
-docker-compose up --build
+cp .env.EXAMPLE .env
+cp docker-compose.override.EXAMPLE.yml docker-compose.override.yml
 ```
 
-2. **Access the app**: [http://localhost:5000](http://localhost:5000)
+> `docker-compose.override.yml` enables hot-reload via the Flask dev server — edits to `app/` are reflected instantly without rebuilding. Set `SETUP_TYPE=none` inside it to skip DB init on every restart.
+
+2. **Run initial DB setup** (first time only):
+
+```bash
+docker compose run --rm api uv run python setup.py YOUR_DISCORD_ADMIN_USER_ID
+```
+
+3. **Build and start containers**:
+
+```bash
+docker compose up --build
+```
+
+4. **Access the app**: [http://localhost:5000](http://localhost:5000)
 
 > The Flask app connects to PostgreSQL using the hostname defined in `POSTGRES_SERVER` in your `.env`.
+>
+> To run in **production mode** locally (gunicorn, no hot-reload), bypass the override:
+> ```bash
+> docker compose -f docker-compose.yml up --build
+> ```
 
 ---
 
