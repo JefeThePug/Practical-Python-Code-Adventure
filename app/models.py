@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey
+from sqlalchemy import ARRAY, Boolean, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.extensions import db
@@ -7,19 +7,19 @@ from app.extensions import db
 class DiscordID(db.Model):
     __tablename__ = "discord_ids"
 
-    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    year: Mapped[str] = mapped_column(db.String(4), nullable=False)
-    name: Mapped[str] = mapped_column(db.String(10), nullable=False)
-    discord_id: Mapped[str] = mapped_column(db.String(20), nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    year: Mapped[str] = mapped_column(String(4), nullable=False)
+    name: Mapped[str] = mapped_column(String(10), nullable=False)
+    discord_id: Mapped[str] = mapped_column(String(20), nullable=False)
 
 
 class MainEntry(db.Model):
     __tablename__ = "main_entries"
 
-    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    year: Mapped[str] = mapped_column(db.String(4), nullable=False)
-    val: Mapped[int] = mapped_column(db.Integer, nullable=False)
-    ee: Mapped[str | None] = mapped_column(db.Text)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    year: Mapped[str] = mapped_column(String(4), nullable=False)
+    val: Mapped[int] = mapped_column(Integer, nullable=False)
+    ee: Mapped[str | None] = mapped_column(Text)
 
     sub_entries: Mapped[list["SubEntry"]] = relationship(
         "SubEntry",
@@ -31,17 +31,17 @@ class MainEntry(db.Model):
 class SubEntry(db.Model):
     __tablename__ = "sub_entries"
 
-    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     main_entry_id: Mapped[int] = mapped_column(
         ForeignKey("main_entries.id", ondelete="CASCADE")
     )
-    part: Mapped[int] = mapped_column(db.Integer)
-    title: Mapped[str] = mapped_column(db.Text)
-    content: Mapped[str] = mapped_column(db.Text)
-    instructions: Mapped[str] = mapped_column(db.Text)
-    input_type: Mapped[str] = mapped_column(db.Text)
-    form: Mapped[str] = mapped_column(db.Text)
-    solution: Mapped[str] = mapped_column(db.Text)
+    part: Mapped[int] = mapped_column(Integer)
+    title: Mapped[str] = mapped_column(Text)
+    content: Mapped[str] = mapped_column(Text)
+    instructions: Mapped[str] = mapped_column(Text)
+    input_type: Mapped[str] = mapped_column(Text)
+    form: Mapped[str] = mapped_column(Text)
+    solution: Mapped[str] = mapped_column(Text)
 
     # Define the relationship
     main_entry: Mapped[MainEntry] = relationship(
@@ -53,20 +53,20 @@ class SubEntry(db.Model):
 class Obfuscation(db.Model):
     __tablename__ = "obfuscation"
 
-    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    year: Mapped[str] = mapped_column(db.String(4), nullable=False)
-    val: Mapped[int] = mapped_column(db.Integer, nullable=False)
-    obfuscated_key: Mapped[str] = mapped_column(db.String(255), nullable=False)
-    html_key: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    year: Mapped[str] = mapped_column(String(4), nullable=False)
+    val: Mapped[int] = mapped_column(Integer, nullable=False)
+    obfuscated_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    html_key: Mapped[str] = mapped_column(String(255), nullable=False)
 
 
 class User(db.Model):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    user_id: Mapped[str] = mapped_column(db.String(20), nullable=False, unique=True)
-    name: Mapped[str | None] = mapped_column(db.String(50))
-    github: Mapped[str | None] = mapped_column(db.String(50))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(20), nullable=False, unique=True)
+    name: Mapped[str | None] = mapped_column(String(50))
+    github: Mapped[str | None] = mapped_column(String(50))
 
     progress: Mapped[list["Progress"]] = relationship(
         "Progress",
@@ -79,19 +79,19 @@ class User(db.Model):
 class Progress(db.Model):
     __tablename__ = "progress"
 
-    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
-    year: Mapped[str] = mapped_column(db.String(4), nullable=False)
-    c1: Mapped[list[bool]] = mapped_column(db.ARRAY(db.Boolean))
-    c2: Mapped[list[bool]] = mapped_column(db.ARRAY(db.Boolean))
-    c3: Mapped[list[bool]] = mapped_column(db.ARRAY(db.Boolean))
-    c4: Mapped[list[bool]] = mapped_column(db.ARRAY(db.Boolean))
-    c5: Mapped[list[bool]] = mapped_column(db.ARRAY(db.Boolean))
-    c6: Mapped[list[bool]] = mapped_column(db.ARRAY(db.Boolean))
-    c7: Mapped[list[bool]] = mapped_column(db.ARRAY(db.Boolean))
-    c8: Mapped[list[bool]] = mapped_column(db.ARRAY(db.Boolean))
-    c9: Mapped[list[bool]] = mapped_column(db.ARRAY(db.Boolean))
-    c10: Mapped[list[bool]] = mapped_column(db.ARRAY(db.Boolean))
+    year: Mapped[str] = mapped_column(String(4), nullable=False)
+    c1: Mapped[list[bool]] = mapped_column(ARRAY(Boolean))
+    c2: Mapped[list[bool]] = mapped_column(ARRAY(Boolean))
+    c3: Mapped[list[bool]] = mapped_column(ARRAY(Boolean))
+    c4: Mapped[list[bool]] = mapped_column(ARRAY(Boolean))
+    c5: Mapped[list[bool]] = mapped_column(ARRAY(Boolean))
+    c6: Mapped[list[bool]] = mapped_column(ARRAY(Boolean))
+    c7: Mapped[list[bool]] = mapped_column(ARRAY(Boolean))
+    c8: Mapped[list[bool]] = mapped_column(ARRAY(Boolean))
+    c9: Mapped[list[bool]] = mapped_column(ARRAY(Boolean))
+    c10: Mapped[list[bool]] = mapped_column(ARRAY(Boolean))
 
     # Define the relationship
     user: Mapped[User] = relationship("User", back_populates="progress")
@@ -104,34 +104,34 @@ class Progress(db.Model):
 class Solution(db.Model):
     __tablename__ = "solutions"
 
-    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    year: Mapped[str] = mapped_column(db.String(4), nullable=False)
-    val: Mapped[int] = mapped_column(db.Integer, nullable=False)
-    part1: Mapped[str] = mapped_column(db.Text, nullable=False)
-    part2: Mapped[str] = mapped_column(db.Text, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    year: Mapped[str] = mapped_column(String(4), nullable=False)
+    val: Mapped[int] = mapped_column(Integer, nullable=False)
+    part1: Mapped[str] = mapped_column(Text, nullable=False)
+    part2: Mapped[str] = mapped_column(Text, nullable=False)
 
 
 class Permission(db.Model):
     __tablename__ = "permissions"
 
-    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    user_id: Mapped[str] = mapped_column(db.String(20), nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(20), nullable=False)
 
 
 class Release(db.Model):
     __tablename__ = "releases"
 
-    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    year: Mapped[str] = mapped_column(db.String(4), nullable=False)
-    release_number: Mapped[int] = mapped_column(db.Integer, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    year: Mapped[str] = mapped_column(String(4), nullable=False)
+    release_number: Mapped[int] = mapped_column(Integer, nullable=False)
 
 
 class Sponsor(db.Model):
     __tablename__ = "sponsors"
-    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(db.String(100), nullable=False)
-    type: Mapped[str] = mapped_column(db.String(10), nullable=False)
-    website: Mapped[str | None] = mapped_column(db.Text)
-    image: Mapped[str | None] = mapped_column(db.Text)
-    blurb: Mapped[str | None] = mapped_column(db.Text)
-    disabled: Mapped[bool] = mapped_column(db.Boolean, default=False, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    type: Mapped[str] = mapped_column(String(10), nullable=False)
+    website: Mapped[str | None] = mapped_column(Text)
+    image: Mapped[str | None] = mapped_column(Text)
+    blurb: Mapped[str | None] = mapped_column(Text)
+    disabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
