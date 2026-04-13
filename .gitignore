@@ -193,3 +193,4 @@ encrypt.py
 encrypted.txt
 /.vscode
 postgres-data/
+docker-compose.override.yml
