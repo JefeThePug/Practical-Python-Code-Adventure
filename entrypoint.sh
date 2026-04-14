@@ -3,23 +3,6 @@ set -e
 
 echo "Starting container..."
 
-if [ "$SETUP_TYPE" = "setup" ] || [ "$SETUP_TYPE" = "update" ]; then
-    if [ -z "$DISCORD_ADMIN_USER_ID" ]; then
-        echo "Error: DISCORD_ADMIN_USER_ID is not set!"
-        exit 1
-    fi
-
-    echo "Running $SETUP_TYPE..."
-
-    if [ "$SETUP_TYPE" = "setup" ]; then
-        uv run python setup.py "$DISCORD_ADMIN_USER_ID"
-    else
-        uv run python update_from_2025.py "$DISCORD_ADMIN_USER_ID"
-    fi
-else
-    echo "No DB setup action (SETUP_TYPE=${SETUP_TYPE:-unset})"
-fi
-
 # --- Gunicorn Phase ---
 WORKERS=${GUNICORN_WORKERS:-2}
 TIMEOUT=${GUNICORN_TIMEOUT:-120}

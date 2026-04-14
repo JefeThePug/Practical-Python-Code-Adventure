@@ -11,7 +11,7 @@ from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM as Encryption
 from dotenv import load_dotenv
 from flask import Flask
-from sqlalchemy import create_engine, event, text
+from sqlalchemy import create_engine, event, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
 
 load_dotenv(Path(__file__).resolve().parent / ".env")
@@ -21,16 +21,17 @@ from app.models import (  # noqa: E402
     MainEntry,
     Obfuscation,
     Permission,
+    Progress,
     Release,
     Solution,
     Sponsor,
     SubEntry,
+    User,
     db,
 )
 
 # Initialize Flask application
 app = Flask(__name__)
-app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 # Configure SQLAlchemy database URI and settings
 POSTGRES_USER = os.getenv("POSTGRES_USER")
@@ -49,7 +50,6 @@ ADMIN_URL = (
 
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_COMMIT_ON_TEARDOWN"] = False
 
 CREATED_TABLES = []
 
@@ -62,52 +62,176 @@ def receive_after_create(target, connection, tables, **kwargs):
 
 
 def main():
-    admin_id = check_args()
-    check_database_exists()
+    admin_id, latest_year = check_args()
+    previous = check_database_exists()
+
+    engine = create_engine(DATABASE_URL)
+    backup = None
+
+    if previous:
+        with engine.connect() as conn:
+            schema = detect_schema(conn)
+            backup = fetch_data(conn, schema)
+
     db.init_app(app)
-    create_missing_tables()
-    fill_permanent_data(admin_id)
+
+    with app.app_context():
+        drop_tables(db.engine)
+        create_missing_tables(db.engine)
+        fill_permanent_data(admin_id, latest_year)
+
+        if previous and backup:
+            migrate_user_data(backup)
+            print("Migration successful.")
+
+        db.session.commit()
 
 
 def check_args():
-    if len(sys.argv) != 2:
+    admin_id = os.getenv("DISCORD_ADMIN_USER_ID", "")
+    if not admin_id:
         sys.exit(
             "\nPlease include your administrator Discord ID.\n"
-            "Usage: python setup.py <admin_discord_user_id>"
+            "Usage: python update.py <admin_discord_user_id>"
         )
-    if not os.getenv("YEAR"):
+    latest_year = os.getenv("YEAR", "")
+    if not latest_year:
         sys.exit("YEAR env var required")
 
-    return sys.argv[1].strip()
+    return admin_id, int(latest_year)
 
 
 def check_database_exists():
-    engine = create_engine(ADMIN_URL).execution_options(isolation_level="AUTOCOMMIT")
+    admin_engine = create_engine(ADMIN_URL)
+    db_exists = False
 
-    with engine.connect() as conn:
+    with admin_engine.connect() as conn:
         result = conn.execute(
             text("SELECT 1 FROM pg_database WHERE datname = :dbname"),
             {"dbname": DATABASE_NAME},
         )
-        if not result.fetchone():
-            if not DATABASE_NAME:
-                sys.exit("Database Name must be stored in .env")
+        db_exists = result.fetchone() is not None
+
+    if not db_exists:
+        with admin_engine.connect() as conn:
+            conn = conn.execution_options(isolation_level="AUTOCOMMIT")
             conn.execute(text(f"CREATE DATABASE {DATABASE_NAME}"))
-            print(f"Database {DATABASE_NAME} created.")
 
-    engine.dispose()
+    admin_engine.dispose()
+    return db_exists
 
 
-def create_missing_tables():
+def detect_schema(conn):
+    if table_exists(conn, "users") and table_exists(conn, "releases"):
+        return "new"
+    return "old"
+
+
+def table_exists(conn, table_name):
+    result = conn.execute(
+        text(
+            "SELECT EXISTS (SELECT 1 FROM information_schema.tables "
+            "WHERE table_schema = 'public' AND table_name = :name)"
+        ),
+        {"name": table_name},
+    )
+    return result.scalar()
+
+
+def fetch_data(conn, schema):
+    progress_rows = [
+        dict(row._mapping) for row in conn.execute(text("SELECT * FROM progress"))
+    ]
+    discord_rows = [
+        dict(row._mapping) for row in conn.execute(text("SELECT * FROM discord_ids"))
+    ]
+    permissions = [
+        dict(row._mapping) for row in conn.execute(text("SELECT * FROM permissions"))
+    ]
+    users = []
+    progress = []
+    releases = []
+    discord = []
+
+    if schema == "old":
+        release_value = conn.execute(
+            text("SELECT release.release FROM release")
+        ).scalar()
+        releases = [{"year": "2025", "release_number": release_value or 0}]
+
+        for row in discord_rows:
+            discord.append(
+                {"year": "2025", "name": row["name"], "discord_id": row["discord_id"]}
+            )
+
+        seen_users = set()
+
+        for row in progress_rows:
+            user_id = row["user_id"]
+            parsed_progress = {f"c{i}": row[f"c{i}"] for i in range(1, 11)}
+            if all(v == [False, False] for v in parsed_progress.values()):
+                continue
+
+            if user_id not in seen_users:
+                users.append(
+                    {
+                        "user_id": user_id,
+                        "name": row.get("name", ""),
+                        "github": row.get("github", ""),
+                    }
+                )
+                seen_users.add(user_id)
+
+            progress.append(
+                {
+                    "reference": user_id,
+                    "year": "2025",
+                    **parsed_progress,
+                }
+            )
+
+    elif schema == "new":
+        users = [
+            dict(row._mapping) for row in conn.execute(text("SELECT * FROM users"))
+        ]
+        releases = [
+            dict(row._mapping) for row in conn.execute(text("SELECT * FROM releases"))
+        ]
+        discord = discord_rows
+        id_to_user = {user["id"]: user["user_id"] for user in users}
+        for row in progress_rows:
+            progress.append(
+                {
+                    "reference": id_to_user[row["user_id"]],
+                    "year": row["year"],
+                    **{f"c{i}": row[f"c{i}"] for i in range(1, 11)},
+                }
+            )
+
+    return {
+        "users": users,
+        "progress": progress,
+        "discord_ids": discord,
+        "permissions": permissions,
+        "releases": releases,
+    }
+
+
+def drop_tables(engine):
+    with engine.begin() as conn:
+        conn.execute(text("DROP SCHEMA public CASCADE"))
+        conn.execute(text("CREATE SCHEMA public"))
+    print("Reset public schema, clearing all tables.")
+
+
+def create_missing_tables(engine):
     CREATED_TABLES.clear()
+    db.metadata.create_all(bind=engine)
 
-    with app.app_context():
-        db.create_all()
-
-        if CREATED_TABLES:
-            print(f"Success: {len(CREATED_TABLES)} new table(s) created.")
-        else:
-            print("No new tables needed; all schemas already exist.")
+    if CREATED_TABLES:
+        print(f"Success: {len(CREATED_TABLES)} new table(s) created.")
+    else:
+        print("No new tables needed; all schemas already exist.")
 
 
 def fetch(url: str) -> requests.Response:
@@ -116,15 +240,7 @@ def fetch(url: str) -> requests.Response:
     return res
 
 
-def fill_permanent_data(admin_id):
-    def commit_block(label: str):
-        try:
-            db.session.commit()
-            print(f"{label} ✓")
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            print(f"{label} ✗  ({e})")
-
+def fill_permanent_data(admin_id, latest_year):
     def decrypt(enc_b64: str, key: bytes) -> bytes:
         aes = Encryption(key)
         raw = base64.b64decode(enc_b64)
@@ -150,143 +266,189 @@ def fill_permanent_data(admin_id):
                 result[year] = None
         return result
 
-    latest_year = int(os.getenv("YEAR") or "2025")
+    releases = []
+    for year in range(2025, latest_year + 1):
+        r = Release()
+        r.year = f"{year}"
+        r.release_number = 0
+        releases.append(r)
+    db.session.add_all(releases)
+    print("Inserted releases ✓")
 
-    with app.app_context():
-        inspector = db.inspect(db.engine)
-        table_names = inspector.get_table_names()
+    permissions = []
+    for uid in ("609283782897303554", admin_id):
+        p = Permission()
+        p.user_id = uid
+        permissions.append(p)
+    db.session.add_all(permissions)
+    print("Inserted permissions ✓")
 
-        if "releases" in table_names and not db.session.query(Release).first():
-            releases = [
-                Release(year=f"{year}", release_number=0)  # type: ignore
-                for year in range(2025, latest_year + 1)
-            ]
-            db.session.add_all(releases)
-            commit_block("Inserted releases")
+    discord_ids = []
+    for zeros in ("guild", "adventurer"):
+        d = DiscordID()
+        d.year = "0"
+        d.name = zeros
+        d.discord_id = ""
+        discord_ids.append(d)
+    for y in range(2025, latest_year + 1):
+        for i in range(11):
+            d = DiscordID()
+            d.year = f"{y}"
+            d.name = f"{i}" if i > 0 else "champion"
+            d.discord_id = ""
+            discord_ids.append(d)
+    db.session.add_all(discord_ids)
+    print("Inserted discord ids ✓")
 
-        if "permissions" in table_names:
-            if not db.session.query(Permission).first():
-                db.session.add_all(
-                    [
-                        Permission(user_id="609283782897303554"),  # type: ignore
-                        Permission(user_id=admin_id),  # type: ignore
-                    ]
-                )
-                commit_block("Inserted permissions")
-            else:
-                if (
-                    not db.session.query(Permission)
-                    .filter_by(user_id=admin_id)
-                    .one_or_none()
-                ):
-                    db.session.add(Permission(user_id=admin_id))  # type: ignore
-                    commit_block("Added missing admin permission")
+    to_load = (
+        "aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9KZWZlVGhlUHVnLzYzNG"
+        "FhMjdkZDFmNGJkOTlhYWU4NDAzNjA1ZThhNWJiL3Jhdy9vYmZ1c2NhdGlvbi5qc29u"
+    )
+    results = process_json(to_load)
+    rows = []
+    for y in range(2025, latest_year + 1):
+        for i, (k, h) in enumerate(results.get(y) or [], 1):
+            o = Obfuscation()
+            o.year = str(y)
+            o.val = i
+            o.obfuscated_key = k
+            o.html_key = h
+            rows.append(o)
+    db.session.add_all(rows)
+    print("Inserted obfuscation data ✓")
 
-        if "discord_ids" in table_names and not db.session.query(DiscordID).first():
-            discord_ids = [
-                DiscordID(year="0", name="guild", discord_id=""),  # type: ignore
-                DiscordID(year="0", name="adventurer", discord_id=""),  # type: ignore
-                *[
-                    DiscordID(
-                        year=f"{y}",  # type: ignore
-                        name=(f"{i}" if i > 0 else "champion"),  # type: ignore
-                        discord_id="",  # type: ignore
-                    )
-                    for y in range(2025, latest_year + 1)
-                    for i in range(11)
-                ],
-            ]
-            db.session.add_all(discord_ids)
-            commit_block("Inserted discord ids")
+    to_load = (
+        "aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9KZWZlVGhlUHVn"
+        "L2M5NWFmY2IwOTFiY2JiODhmMDQ4NTRkMzZlYTMxOTRmL3Jhdy9lZS5qc29u"
+    )
+    results = process_json(to_load)
+    rows = []
+    for y in range(2025, latest_year + 1):
+        for i, ee in enumerate(results.get(y) or [], 1):
+            m = MainEntry()
+            m.year = str(y)
+            m.val = i
+            m.ee = ee
+            rows.append(m)
+    db.session.add_all(rows)
+    print("Inserted main entries ✓")
 
-        if "obfuscation" in table_names and not db.session.query(Obfuscation).first():
-            to_load = (
-                "aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9KZWZlVGhlUHVnLzYzNG"
-                "FhMjdkZDFmNGJkOTlhYWU4NDAzNjA1ZThhNWJiL3Jhdy9vYmZ1c2NhdGlvbi5qc29u"
-            )
-            results = process_json(to_load)
-            rows = [
-                Obfuscation(year=str(y), val=i, obfuscated_key=o, html_key=h)  # type: ignore
-                for y in range(2025, latest_year + 1)
-                for i, (o, h) in enumerate(results.get(y) or [], 1)
-            ]
-            db.session.add_all(rows)
-            commit_block("Inserted obfuscation data")
+    to_load = (
+        "aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9KZWZlVGhlUHVnLz"
+        "c5YmM3OWMzMzkzOWFlNTRjYjEyYWQ3Yjc5NmFmNjk2L3Jhdy9odG1sLmpzb24="
+    )
+    url = base64.b64decode(to_load).decode()
+    repos = fetch(url).json()
 
-        if "main_entries" in table_names and not db.session.query(MainEntry).first():
-            to_load = (
-                "aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9KZWZlVGhlUHVn"
-                "L2M5NWFmY2IwOTFiY2JiODhmMDQ4NTRkMzZlYTMxOTRmL3Jhdy9lZS5qc29u"
-            )
-            results = process_json(to_load)
-            rows = [
-                MainEntry(year=str(y), val=i, ee=ee)  # type: ignore
-                for y in range(2025, latest_year + 1)
-                for i, ee in enumerate(results.get(y) or [], 1)
-            ]
-            db.session.add_all(rows)
-            commit_block("Inserted main entries")
+    parts = (
+        base64.b64decode(
+            "aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9KZWZlVGhlUHVnLw=="
+        ).decode(),
+        base64.b64decode("L3Jhdy8=").decode(),
+    )
 
-        if "sub_entries" in table_names and not db.session.query(SubEntry).first():
-            to_load = (
-                "aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9KZWZlVGhlUHVnLz"
-                "c5YmM3OWMzMzkzOWFlNTRjYjEyYWQ3Yjc5NmFmNjk2L3Jhdy9odG1sLmpzb24="
-            )
-            url = base64.b64decode(to_load).decode()
-            repos = fetch(url).json()
+    for year, r in enumerate(repos, 2025):
+        url = f"{r.join(parts)}{year}.txt"
+        key_str = os.getenv(f"KEY{year}")
+        if not key_str:
+            print(f"Missing key for {year}")
+            continue
+        response = fetch(url)
+        key = hashlib.sha256(key_str.encode()).digest()
+        try:
+            plaintext = decrypt(response.text.strip(), key)
+            data = yaml.safe_load(plaintext.decode())
+            db.session.add_all(SubEntry(**d) for d in data)
+        except InvalidTag:
+            print(f"Invalid key for {year}")
 
-            parts = (
-                base64.b64decode(
-                    "aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9KZWZlVGhlUHVnLw=="
-                ).decode(),
-                base64.b64decode("L3Jhdy8=").decode(),
-            )
+    print("Inserted sub entries ✓")
 
-            for year, r in enumerate(repos, 2025):
-                url = f"{r.join(parts)}{year}.txt"
-                key_str = os.getenv(f"KEY{year}")
-                if not key_str:
-                    print(f"Missing key for {year}")
-                    continue
-                response = fetch(url)
-                key = hashlib.sha256(key_str.encode()).digest()
-                try:
-                    plaintext = decrypt(response.text.strip(), key)
-                    data = yaml.safe_load(plaintext.decode())
-                    db.session.add_all(SubEntry(**d) for d in data)
-                except InvalidTag:
-                    print(f"Invalid key for {year}")
+    to_load = (
+        "aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9KZWZlVGhlUHVnLzQ2ZG"
+        "VhZmI5MmU1OTUwNzc4ZTY0NWYzYmVjMWU1NzUxL3Jhdy9zb2x1dGlvbnMuanNvbg=="
+    )
+    results = process_json(to_load)
+    rows = []
+    for y in range(2025, latest_year + 1):
+        for i, r in enumerate(results.get(y) or [], 1):
+            s = Solution()
+            s.year = str(y)
+            s.val = i
+            s.part1 = r.get("part1", "")
+            s.part2 = r.get("part2", "")
+            rows.append(s)
+    db.session.add_all(rows)
+    print("Inserted solutions ✓")
 
-            commit_block("Inserted sub entries")
+    to_load = (
+        "aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9KZWZlVGhlUHVnLzg5"
+        "MDAzYTg2NDEyYzIzNmM3MmU3ODlkYjJhODdhYTgxL3Jhdy9zcG9uc29ycy5qc29u"
+    )
+    url = base64.b64decode(to_load).decode()
+    data = fetch(url).json()
+    db.session.add_all(Sponsor(**row) for row in data.get("sponsors") or [])
+    print("Inserted sponsors ✓")
 
-        if "solutions" in table_names and not db.session.query(Solution).first():
-            to_load = (
-                "aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9KZWZlVGhlUHVnLzQ2ZG"
-                "VhZmI5MmU1OTUwNzc4ZTY0NWYzYmVjMWU1NzUxL3Jhdy9zb2x1dGlvbnMuanNvbg=="
-            )
-            results = process_json(to_load)
-            rows = [
-                Solution(
-                    year=str(y),  # type: ignore
-                    val=i,  # type: ignore
-                    part1=s.get("part1", ""),  # type: ignore
-                    part2=s.get("part2", ""),  # type: ignore
-                )
-                for y in range(2025, latest_year + 1)
-                for i, s in enumerate(results.get(y) or [], 1)
-            ]
-            db.session.add_all(rows)
-            commit_block("Inserted solutions")
 
-        if "sponsors" in table_names and not db.session.query(Sponsor).first():
-            to_load = (
-                "aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9KZWZlVGhlUHVnLzg5"
-                "MDAzYTg2NDEyYzIzNmM3MmU3ODlkYjJhODdhYTgxL3Jhdy9zcG9uc29ycy5qc29u"
-            )
-            url = base64.b64decode(to_load).decode()
-            data = fetch(url).json()
-            db.session.add_all(Sponsor(**row) for row in data.get("sponsors") or [])
-            commit_block("Inserted sponsors")
+def migrate_user_data(backup):
+    progress_added = users_added = 0
+    reference_to_id = {}
+
+    existing_users = {u.user_id: u for u in User.query.all()}
+    for row in backup["users"]:
+        user_id = row["user_id"]
+        user = existing_users.get(user_id)
+        if not user:
+            user = User()
+            user.user_id = user_id
+            user.name = row["name"]
+            user.github = row["github"]
+            db.session.add(user)
+            db.session.flush()
+            existing_users[user_id] = user
+            users_added += 1
+
+        reference_to_id[user_id] = user.id
+
+    for row in backup["progress"]:
+        user_id = row["reference"]
+        if user_id not in reference_to_id:
+            print(f"Skipping orphan progress for user_id={user_id}")
+            continue
+        progress = Progress()
+        progress.user_id = reference_to_id[user_id]
+        progress.year = row["year"]
+        for i in range(1, 11):
+            setattr(progress, f"c{i}", row[f"c{i}"])
+        db.session.add(progress)
+        progress_added += 1
+
+    for row in backup["discord_ids"]:
+        name = row.get("name", "")
+        year = "0" if name in ("guild", "adventurer") else row["year"]
+        db.session.query(DiscordID).filter_by(year=year, name=name).update(
+            {"discord_id": row["discord_id"]}
+        )
+
+    existing_user_ids = {row[0] for row in db.session.query(Permission.user_id).all()}
+    for row in backup["permissions"]:
+        user_id = row["user_id"]
+        if user_id not in existing_user_ids:
+            p = Permission()
+            p.user_id = user_id
+            db.session.add(p)
+            existing_user_ids.add(user_id)
+
+    for row in backup["releases"]:
+        db.session.query(Release).filter_by(year=row["year"]).update(
+            {"release_number": row["release_number"]}
+        )
+
+    print(
+        f"Migrated: {users_added} Users, {progress_added} rows of Progress,"
+        "all Discord IDs, Admin Permissions and Release Numbers"
+    )
 
 
 if __name__ == "__main__":

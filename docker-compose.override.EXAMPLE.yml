@@ -14,7 +14,6 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_APP=app.run:app
-      - SETUP_TYPE=none
     volumes:
       - ./app:/app/app:ro
     healthcheck:
