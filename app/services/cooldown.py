@@ -2,7 +2,7 @@ import time
 
 from flask import session
 
-COOL_DOWNS = [30, 60, 180, 300]  # seconds
+COOL_DOWNS = [10, 20, 30, 40, 50, 60]  # seconds
 RESET_THRESHOLD_MS = 60 * 60 * 1000  # 60 minutes
 
 
