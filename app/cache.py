@@ -195,7 +195,7 @@ class AdminConstantsCache:
             changed = bool(to_delete or to_add)
             db.session.commit()
             # ---- Cache Phase ----
-            self._permissions = list(perms)
+            self._permissions = list(perm_set)
 
             flash(
                 "Admin settings updated successfully" if changed else "No changes made",
