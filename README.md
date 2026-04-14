@@ -20,8 +20,8 @@ All previous features have been preserved and improved, with better code structu
 ## Key Updates in Version 2
 
 - **Modular Backend** – Blueprints, services, and templating are now separated for clean, maintainable code.
-- **Updated Database** – New PostgreSQL schema for version 2 challenges, with optional migration from version 1.
-- **Flexible Setup Options** – Start fresh or carry over progress from version 1 using `SETUP_TYPE`.
+- **Updated Database** – New PostgreSQL schema for version 2 challenges, with migration support from version 1.
+- **Smart Setup Options** – setup.py recognizes whether to start fresh or carry over progress from version 1.
 - **Redesigned UX** – Clearer layout, more eye-catching style, and expanded site content.
 - **Submission Cooldown** - Server-side timer that prevents repeated submissions and discourages brute-force guessing.
 - **Challenge Organization** – Puzzle inputs and media now structured for multiple years, simplifying future expansion.
@@ -77,11 +77,6 @@ DISCORD_CLIENT_ID="YOUR_CLIENT_ID"
 DISCORD_CLIENT_SECRET="YOUR_CLIENT_SECRET"
 DISCORD_BOT_TOKEN="YOUR_BOT_TOKEN"
 
-# DB Setup in Docker Container
-SETUP_TYPE="setup"   # To setup a new blank db
-#SETUP_TYPE="update" # To update from the 2025 DB without clearing user progress
-#SETUP_TYPE="none"   # To start the Docker container without doing anything to the db
-
 # Latest Year
 YEAR=2026
 KEY2025="KEY_HERE"
@@ -97,8 +92,6 @@ KEY2026="DIFFERENT_KEY_HERE"
 
 > **DISCORD_ADMIN_USER_ID** – Your Discord user ID for admin dashboard access.  
 > **DISCORD\_\* tokens** – OAuth2 credentials for authentication and bot access.
-
-> **SETUP_TYPE** – `setup` = new DB, `update` = migrate from 2025 DB without clearing progress, `none` = no DB changes.
 
 > **YEAR** – Latest challenge year to include (starting from 2025). _Must not exceed released years_.  
 > **KEY####** – Required key to access each year’s challenge and solution data to fill the DB.
@@ -122,18 +115,25 @@ cd Zorak-Coding-Challenges
 uv sync --frozen --no-dev
 ```
 
-3. **Run the initial setup**:
+3. **Copy the .env.EXAMPLE file** and fill in your values in the .env file:
 
-- For a blank DB: `python setup.py`
-- To migrate from version 1: `python update_from_2025.py`
+```bash
+cp .env.EXAMPLE .env
+```
 
-4. **Start the application**:
+4. **Run the initial setup**:
+
+```bash
+python setup.py
+```
+
+5. **Start the application**:
 
 ```bash
 python -m app.run
 ```
 
-5. **Access the app**: [http://localhost:5000](http://localhost:5000)
+6. **Access the app**: [http://localhost:5000](http://localhost:5000)
 
 ---
 
@@ -146,12 +146,12 @@ cp .env.EXAMPLE .env
 cp docker-compose.override.EXAMPLE.yml docker-compose.override.yml
 ```
 
-> `docker-compose.override.yml` enables hot-reload via the Flask dev server — edits to `app/` are reflected instantly without rebuilding. Set `SETUP_TYPE=none` inside it to skip DB init on every restart.
+> `docker-compose.override.yml` enables hot-reload via the Flask dev server — edits to `app/` are reflected instantly without rebuilding.
 
 2. **Run initial DB setup** (first time only):
 
 ```bash
-docker compose run --rm api uv run python setup.py YOUR_DISCORD_ADMIN_USER_ID
+docker compose run --rm api uv run python setup.py
 ```
 
 3. **Build and start containers**:
@@ -218,6 +218,13 @@ Contributions can include:
 - Updating backend services
 - Discovering / fixing bugs
 - Improving documentation
+
+I am also looking for volunteers to help grow this project by:
+
+- Beta testing new challenges
+- Design themed illustration for the landing page images
+
+> ###### **Beta testers and illustrators will be acknowledged on the website**
 
 ---
 
