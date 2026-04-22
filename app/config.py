@@ -24,11 +24,13 @@ class Config:
 
 
 class DevConfig(Config):
+    USE_MINIFIED_ASSETS = False
     DEBUG = True
     TEMPLATES_AUTO_RELOAD = True
 
 
 class ProdConfig(Config):
+    USE_MINIFIED_ASSETS = True
     DEBUG = False
     TEMPLATES_AUTO_RELOAD = False
     SESSION_COOKIE_SECURE = True

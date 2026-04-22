@@ -43,10 +43,6 @@ def register_globals():
             dict[str, list[str]]: Template context variables available to all
             rendered Jinja templates.
         """
-        year = app.config["CURRENT_YEAR"]
-        return {
-            "css_files": [
-                "main",
-                f"year_overrides/style{session.get('year', year)}",
-            ],
-        }
+        year = session.get("year") or app.config["CURRENT_YEAR"]
+        main_file = "main.min" if app.config["USE_MINIFIED_ASSETS"] else "main"
+        return {"css_files": [main_file, f"year_overrides/style{year}"]}

@@ -18,6 +18,9 @@ RUN uv sync --frozen --no-dev
 
 COPY . .
 
+# Bundle CSS for speed image build time
+RUN python css_bundler.py
+
 RUN chmod +x entrypoint.sh
 
 RUN useradd --create-home --shell /bin/bash appuser \
