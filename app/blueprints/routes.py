@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session
+from flask import Blueprint, Response, render_template, send_from_directory, session
 
 from app.appctx import get_app
 from app.services import get_progress
@@ -91,3 +91,29 @@ def sponsor():
         t2=t2,
         t1=t1,
     )
+
+
+@route_bp.route("/robots.txt")
+def robots():
+    return send_from_directory("app/static", "robots.txt")
+
+
+@route_bp.route("/sitemap.xml")
+def sitemap():
+    base_url = "https://adventure.practicalpython.org"
+
+    pages = list(range(2025, get_app().config["CURRENT_YEAR"] + 1)) + [
+        "how_to",
+        "champions",
+        "gratitude",
+        "sponsor",
+    ]
+
+    xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+    xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    xml.append(f"<url><loc>{base_url}/</loc></url>")
+    for page in pages:
+        xml.append(f"<url><loc>{base_url}/{page}</loc></url>")
+    xml.append("</urlset>")
+
+    return Response("\n".join(xml), mimetype="application/xml")

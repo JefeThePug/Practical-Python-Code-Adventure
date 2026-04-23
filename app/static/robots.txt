@@ -1,0 +1,10 @@
+User-agent: *
+
+Disallow: /admin/
+Disallow: /pre-login
+Disallow: /login
+Disallow: /callback
+Disallow: /logout
+
+# --- Sitemap ---
+Sitemap: https://adventure.practicalpython.org/sitemap.xml
