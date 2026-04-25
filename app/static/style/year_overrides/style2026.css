@@ -1,135 +1,150 @@
 /* Paper */
 
 :root {
-    --b-main: #99b0d1;
-    --b-sec: #b79162;
-    --b-sec-lite: #fffef0;
-    --b-code: #dadada;
+  --b-main: #99b0d1;
+  --b-sec: #b79162;
+  --b-sec-lite: #fffef0;
+  --b-code: #dadada;
 
-    --t-main: #643f1e;
-    --t-focus: #916541;
-    --t-focus-shadow: #cdb394;
-    --t-link: #B03A2E;
-    --t-nav: #fffef0;
-    --t-nav-special: #9a931b;
+  --t-main: #643f1e;
+  --t-focus: #916541;
+  --t-focus-shadow: #cdb394;
+  --t-link: #b03a2e;
+  --t-nav: #fffef0;
+  --t-nav-special: #9a931b;
 
-    --i-on: #6a6c33;
-    --i-off: #dadada;
+  --i-on: #6a6c33;
+  --i-off: #dadada;
 
-    --c-main: #282e13;
-    --c-final: #676112;
+  --c-main: #282e13;
+  --c-final: #676112;
 
-    --stone-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
-    --stone-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1 0.3' numOctaves='20' result='f'/%3E%3CfeColorMatrix in='f' type='matrix' values='0 0 0 0 0, 0 0 0 0 0, 0 0 0 0 0, 0 0 0 1 0'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='gray' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+  --stone-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  --stone-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1 0.3' numOctaves='20' result='f'/%3E%3CfeColorMatrix in='f' type='matrix' values='0 0 0 0 0, 0 0 0 0 0, 0 0 0 0 0, 0 0 0 1 0'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='gray' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
 }
 
 /* Sections */
 .section {
-    background-clip: padding-box;
-    border-image: url(../../images/border_bg/2026A.png) 32 repeat;
+  background-clip: padding-box;
+  border-image: url(../../images/border_bg/2026A.png) 32 repeat;
 
-    &::before {
-        background: var(--b-sec-lite);
-        border-image: url(../../images/border_bg/2026B.png) 32 repeat;
-        filter: blur(15px);
-        inset: -3px;
-        z-index: -1;
-    }
+  &::before {
+    background: var(--b-sec-lite);
+    border-image: url(../../images/border_bg/2026B.png) 32 repeat;
+    filter: blur(15px);
+    inset: -3px;
+    z-index: -1;
+  }
 }
 
 input {
-    background: var(--b-sec-lite);
+  background: var(--b-sec-lite);
 }
 
 /* Images */
-.img-container, .logo-container {
-    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-    overflow: hidden;
+.img-container,
+.logo-container {
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  overflow: hidden;
 }
 
 .flex-container-50 {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
 }
 
 .container-item-50 {
-    box-sizing: border-box;
-    flex: 0 0 100%;
+  box-sizing: border-box;
+  flex: 0 0 100%;
 }
 
 .no-radius {
-    border-radius: 0;
+  border-radius: 0;
 }
 
 /* Table and List */
 .pad-list {
-    padding-left: 20px;
+  padding-left: 20px;
 }
 
 ol.enumerate > li::marker {
-    content: counter(list-item) ": ";
+  content: counter(list-item) ": ";
 }
 
 ol.steps {
-    padding-left: 6rem;
+  padding-left: 6rem;
 
-    > li::marker {
-        content: "Step " counter(list-item) ": ";
-        color: var(--t-focus);
-        font-weight: bold;
-        text-shadow: 0 0 0.1em var(--t-focus-shadow);
-    }
+  > li::marker {
+    content: "Step " counter(list-item) ": ";
+    color: var(--t-focus);
+    font-weight: bold;
+    text-shadow: 0 0 0.1em var(--t-focus-shadow);
+  }
 }
 
 td.select {
-    color: var(--t-nav) !important;
+  color: var(--t-nav) !important;
 }
 
 td.g {
-    color: initial;
+  color: initial;
 }
 
 .map tbody tr {
-    border: 1px solid var(--t-main);
+  border: 1px solid var(--t-main);
 
-    :nth-child(1n) {
-        background-color: var(--b-code);
-    }
+  :nth-child(1n) {
+    background-color: var(--b-code);
+  }
 }
 
 .map td {
-    color: var(--t-main);
-    height: 20px;
-    padding: 0;
-    line-height: 10px;
-    width: 15px;
+  color: var(--t-main);
+  height: 20px;
+  padding: 0;
+  line-height: 10px;
+  width: 15px;
 }
 
-
 /* Stone Elements */
-.code, table, tr, th, td, .shimmer {
-    background-blend-mode: overlay;
-    background-color: var(--b-code);
-    background-image: linear-gradient(
-            to bottom right,
-            rgba(255, 255, 255, 0.1),
-            rgba(0, 0, 0, 0.15)
+.code,
+table,
+tr,
+th,
+td,
+.shimmer {
+  background-blend-mode: overlay;
+  background-color: var(--b-code);
+  background-image:
+    linear-gradient(
+      to bottom right,
+      rgba(255, 255, 255, 0.1),
+      rgba(0, 0, 0, 0.15)
     ),
     var(--stone-noise);
-    border: none;
-    border-radius: var(--stone-radius);
-    box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.25),
-    inset -2px -2px 1px rgba(0, 0, 0, 0.4), 0 2px 3px rgba(0, 0, 0, 0.4);
-    color: transparent;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3),
+  border: none;
+  border-radius: var(--stone-radius);
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.25),
+    inset -2px -2px 1px rgba(0, 0, 0, 0.4),
+    0 2px 3px rgba(0, 0, 0, 0.4);
+  color: transparent;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.3),
     0 -1px 0 rgba(0, 0, 0, 0.892);
 }
 
-
 @media (min-width: 768px) {
-    .container-item-50 {
-        flex: 0 0 calc(50% - 30px);
-    }
+  .container-item-50 {
+    flex: 0 0 calc(50% - 30px);
+  }
+}
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+  .section::before {
+    border: 16px solid transparent;
+  }
 }
