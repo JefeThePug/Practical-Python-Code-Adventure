@@ -95,7 +95,9 @@ def sponsor():
 
 @route_bp.route("/robots.txt")
 def robots():
-    return send_from_directory("app/static", "robots.txt")
+    static_dir = get_app().static_folder
+    assert static_dir is not None
+    return send_from_directory(static_dir, "robots.txt")
 
 
 @route_bp.route("/sitemap.xml")
