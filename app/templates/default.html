@@ -40,7 +40,7 @@
         {% endif %} {% if request.endpoint == 'main.release' %}
         <div class="false-link year-menu">
           <span class="material-symbols-outlined"> calendar_clock </span>
-          <span class="nav-text">{{ year }}</span>
+          <span class="nav-text"> {{ year }} ▾</span>
           <div class="dropdown">
             <a href="{{ url_for('main.release', year=2026) }}"
               ><p><span>2026</span></p></a
