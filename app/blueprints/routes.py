@@ -1,9 +1,24 @@
-from flask import Blueprint, Response, render_template, send_from_directory, session
+from flask import (
+    Blueprint,
+    Response,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+    session,
+    url_for,
+)
 
 from app.appctx import get_app
 from app.services import get_progress
 
 route_bp = Blueprint("routes", __name__)
+
+
+@route_bp.before_app_request
+def ensure_year_in_session():
+    if "year" not in session:
+        session["year"] = str(get_app().config["CURRENT_YEAR"])
 
 
 @route_bp.route("/how_to")
@@ -19,15 +34,23 @@ def how_to():
     )
 
 
-@route_bp.route("/champions")
+@route_bp.route("/champions", methods=["GET", "POST"])
 def champions():
     """Render the champions page.
     Returns: Rendered champions.html template with user information.
     """
+    app = get_app()
+    if request.method == "POST":
+        valid_years = {str(y) for y in range(2025, app.config["CURRENT_YEAR"] + 1)}
+        year = request.form["year"]
+        if year in valid_years:
+            session["year"] = year
+        return redirect(url_for("routes.champions"))
+
     user = get_progress()
 
-    champion_list = get_app().data_cache.get_all_champions(session["year"])
-    all_data = get_app().data_cache.get_glance(session["year"])
+    champion_list = app.data_cache.get_all_champions(session["year"])
+    all_data = app.data_cache.get_glance(session["year"])
     names, links = [], []
     for champion in champion_list:
         names.append(champion["name"])

@@ -8,8 +8,27 @@
     <img src="{{ url_for('static', filename='images/good_job.png') }}" alt="Congratulations Image">
   </div>
   <div>
-    <h2>Congratulations</h2>
-    <h3>{{ year }} Champions</h3>
+  <h2>Congratulations</h2>
+    
+  <h3>
+    <form method="POST" style="display:inline;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <span class="year-select-wrapper">
+        <select name="year" class="year-select"
+          onchange="sessionStorage.setItem('scrollY', window.scrollY); this.form.submit();">
+          {% for y in range(config.CURRENT_YEAR, 2024, -1) %}
+            {% set y_str = y|string %}
+            <option value="{{ y_str }}" {% if y_str == year %}selected{% endif %}>
+              {{ y }}
+            </option>
+          {% endfor %}
+        </select>
+      </span>
+    </form>
+    Champions
+  </h3>
+
     <p>everyone who completed both parts of all 10 weeks!</p>
 
     <ul>
@@ -32,7 +51,25 @@
 <section class="section" id="all_scores">
   <div id="score-dialog-root"></div>
   <div>
-    <h2>All Progress</h2>
+    <h2>
+      All
+      <form method="POST" style="display:inline;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <span class="year-select-wrapper">
+        <select name="year" class="year-select"
+          onchange="sessionStorage.setItem('scrollY', window.scrollY); this.form.submit();">
+          {% for y in range(config.CURRENT_YEAR, 2024, -1) %}
+            {% set y_str = y|string %}
+            <option value="{{ y_str }}" {% if y_str == year %}selected{% endif %}>
+              {{ y }}
+            </option>
+          {% endfor %}
+        </select>
+      </span>
+      </form>
+      Progress
+    </h2>
     <table>
       <tr>
         <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
@@ -63,4 +100,15 @@
     </button>
   </p>
 </section>
+
+<script>
+  window.addEventListener("load", function () {
+    const scrollY = sessionStorage.getItem("scrollY");
+    if (scrollY !== null) {
+      window.scrollTo(0, parseInt(scrollY, 10));
+      sessionStorage.removeItem("scrollY");
+    }
+    document.body.style.visibility = "visible";
+  });
+</script>
 {% endblock %}
