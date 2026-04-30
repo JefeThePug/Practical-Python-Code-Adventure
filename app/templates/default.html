@@ -38,16 +38,18 @@
           <span class="nav-text">Home</span>
         </a>
         {% endif %} {% if request.endpoint == 'main.release' %}
-        <div class="false-link year-menu">
-          <span class="material-symbols-outlined"> calendar_clock </span>
-          <span class="nav-text"> {{ year }} ▾</span>
+        <div class="year-wrapper">
+          <div class="false-link year-menu" tabindex="0">
+            <span class="material-symbols-outlined"> calendar_clock </span>
+            <span class="nav-text"> {{ year }} ▾</span>
+          </div>
           <div class="dropdown">
-            <a href="{{ url_for('main.release', year=2026) }}"
-              ><p><span>2026</span></p></a
-            >
-            <a href="{{ url_for('main.release', year=2025) }}"
-              ><p><span>2025</span></p></a
-            >
+            <a href="{{ url_for('main.release', year=2026) }}">
+              <p><span>2026</span></p>
+            </a>
+            <a href="{{ url_for('main.release', year=2025) }}">
+              <p><span>2025</span></p>
+            </a>
           </div>
         </div>
         {% endif %} {% if request.endpoint != 'routes.how_to' %}

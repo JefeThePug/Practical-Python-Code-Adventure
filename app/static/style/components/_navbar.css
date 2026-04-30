@@ -1,127 +1,144 @@
 /* Navbar */
 
 .navbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0.75rem 0;
-    background: var(--b-sec);
-    color: var(--t-nav);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--b-sec);
+  color: var(--t-nav);
 }
 
 .nav {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    gap: 5%;
-    height: 30px;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  gap: 5%;
+  height: 30px;
 }
 
-.nav a, .nav .false-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    color: var(--t-nav);
-    text-decoration: none;
-    font-weight: bold;
-    transition: filter 0.15s ease;
+.nav > a,
+.nav > .false-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--t-nav);
+  text-decoration: none;
+  font-weight: bold;
+  transition: filter 0.15s ease;
 
-    &:hover {
-        filter: saturate(10);
-    }
+  &:hover {
+    filter: saturate(10);
+  }
 }
 
 .nav a:hover img {
-    filter: saturate(0.05);
+  filter: saturate(0.05);
 }
 
 .nav img {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    display: block;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: block;
 }
 
 /* User menu (hover swap) */
 .user-menu {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+
+  span {
+    user-select: none;
+  }
+
+  .user-action {
     display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
+    opacity: 0;
+    color: var(--t-nav-special);
+    transition: opacity 0.15s ease;
+  }
 
-    span {
-        user-select: none;
-    }
-
+  &:hover {
     .user-action {
-        display: inline-flex;
-        opacity: 0;
-        color: var(--t-nav-special);
-        transition: opacity 0.15s ease;
+      opacity: 1;
     }
-
-    &:hover {
-        .user-action {
-            opacity: 1;
-        }
-    }
+  }
 }
 
 /* Dropdown */
 .dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: var(--b-sec);
-    border-radius: 4px;
-    display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--b-sec);
+  border-radius: 4px;
+  display: none;
+  width: 5em;
+  box-sizing: border-box;
+  z-index: 1001;
+
+  a {
+    display: block;
+    text-decoration: none;
+    text-align: center;
     width: 100%;
-    min-width: 3em;
-    filter: saturate(0.1) !important;
-    box-sizing: border-box;
-    z-index: 1001;
+    padding: 0.25em 0;
 
-    a {
-        display: block;
-        text-decoration: none;
-        text-align: center;
-        width: 100%;
-        padding: 0.25em 0;
-
-        &:hover {
-            color: var(--t-nav);
-        }
-
-        p {
-            margin: 5px 0;
-        }
+    &:hover {
+      color: var(--t-nav);
     }
+
+    p {
+      margin: 5px 0;
+    }
+  }
 }
 
 /* Year menu reveals dropdown */
-.year-menu {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    color: var(--t-main);
-    padding: 5px;
+.year-wrapper {
+  position: relative;
 
-    &:hover {
-        .dropdown {
-            display: block;
-        }
-    }
+  &:focus-within .dropdown {
+    display: block;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .year-wrapper:hover .dropdown {
+    display: block;
+  }
+}
+
+.year-menu {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--t-nav);
+  padding: 5px;
 }
 
 /* responsive helper */
-@media (max-width: 900px) {
-    .nav-text {
-        display: none;
-    }
+@media (max-width: 950px) {
+  .nav-text {
+    display: none;
+  }
+  .nav {
+    gap: 1rem;
+    padding-left: 1.5rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .nav {
+    justify-content: flex-start;
+  }
 }

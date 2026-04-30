@@ -68,10 +68,6 @@ nav a:hover img {
   filter: saturate(0.1) brightness(0.2) !important;
 }
 
-.dropdown {
-  filter: saturate(0.1) brightness(0.4) !important;
-}
-
 /* Table */
 tfoot tr > th {
   background-color: var(--b-focus3);
