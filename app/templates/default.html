@@ -58,27 +58,23 @@
             </button>
           </div>
         </div>
-        {% endif %} {% if request.endpoint != 'routes.how_to' %}
+        {% endif %}
         <a href="{{ url_for('routes.how_to') }}">
           <span class="material-symbols-outlined"> help </span>
           <span class="nav-text">How-To</span>
         </a>
-        {% endif %} {% if request.endpoint != 'routes.champions' %}
         <a href="{{ url_for('routes.champions') }}">
           <span class="material-symbols-outlined"> trophy </span>
           <span class="nav-text">Champions</span>
         </a>
-        {% endif %} {% if request.endpoint != 'routes.gratitude' %}
         <a href="{{ url_for('routes.gratitude') }}">
           <span class="material-symbols-outlined"> favorite </span>
           <span class="nav-text">Gratitude</span>
         </a>
-        {% endif %} {% if request.endpoint != 'routes.sponsor' %}
         <a href="{{ url_for('routes.sponsor') }}">
           <span class="material-symbols-outlined"> star_shine </span>
           <span class="nav-text">Sponsors</span>
         </a>
-        {% endif %}
         <a href="{{ url_for('auth.pre_login') }}">
           <div class="user-menu">
             {% if session.get("user_data") %} {% if img.startswith('http') %} {%
