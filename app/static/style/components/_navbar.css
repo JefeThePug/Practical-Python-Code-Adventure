@@ -110,7 +110,8 @@
 .year-wrapper {
   position: relative;
 
-  &:focus-within .dropdown {
+  &:focus-within .dropdown,
+  &:active .dropdown {
     display: block;
   }
 }
