@@ -84,7 +84,7 @@
   box-sizing: border-box;
   z-index: 1001;
 
-  a {
+  button {
     display: block;
     text-decoration: none;
     text-align: center;
@@ -95,7 +95,12 @@
       color: var(--t-nav);
     }
 
-    p {
+    &::before,
+    &::after {
+      content: "";
+    }
+
+    span {
       margin: 5px 0;
     }
   }

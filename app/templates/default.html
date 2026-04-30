@@ -44,12 +44,18 @@
             <span class="nav-text"> {{ year }} ▾</span>
           </div>
           <div class="dropdown">
-            <a href="{{ url_for('main.release', year=2026) }}">
-              <p><span>2026</span></p>
-            </a>
-            <a href="{{ url_for('main.release', year=2025) }}">
-              <p><span>2025</span></p>
-            </a>
+            <button
+              onclick="location.href = this.dataset.url"
+              data-url="{{ url_for('main.release', year=2026) }}"
+            >
+              <span>2026</span>
+            </button>
+            <button
+              onclick="location.href = this.dataset.url"
+              data-url="{{ url_for('main.release', year=2025) }}"
+            >
+              <span>2025</span>
+            </button>
           </div>
         </div>
         {% endif %} {% if request.endpoint != 'routes.how_to' %}
