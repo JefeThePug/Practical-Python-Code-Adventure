@@ -44,18 +44,14 @@
             <span class="nav-text"> {{ year }} ▾</span>
           </div>
           <div class="dropdown">
+            {% for year in range(config.CURRENT_YEAR, 2024, -1) %}
             <button
               onclick="location.href = this.dataset.url"
-              data-url="{{ url_for('main.release', year=2026) }}"
+              data-url="{{ url_for('main.release', year=year) }}"
             >
-              <span>2026</span>
+              <span>{{ year }}</span>
             </button>
-            <button
-              onclick="location.href = this.dataset.url"
-              data-url="{{ url_for('main.release', year=2025) }}"
-            >
-              <span>2025</span>
-            </button>
+            {% endfor %}
           </div>
         </div>
         {% endif %}
