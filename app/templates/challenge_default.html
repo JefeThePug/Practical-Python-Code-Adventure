@@ -12,8 +12,14 @@
 </script>
 {% endif %}
 
+<script type="application/json" id="cooldown">
+  {{ cooldown | tojson }}
+</script>
+
 <script>
-  const SERVER_COOLDOWN = {{ cooldown | tojson }};
+  const SERVER_COOLDOWN = JSON.parse(
+    document.getElementById("cooldown").textContent.trim()
+  );
 </script>
 
 <section class="section" id="part-one">
