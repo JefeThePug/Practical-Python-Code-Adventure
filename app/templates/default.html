@@ -3,7 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Practical Python Code Adventure</title>
+    <meta
+      name="description"
+      content="Practical Python Code Adventure is a puzzle-driven coding series inspired by Advent of Code, featuring weekly Python programming challenges and an ongoing narrative."
+    />
+    <meta property="og:title" content="Practical Python Code Adventure" />
+    <meta
+      property="og:description"
+      content="Practical Python Code Adventure is a puzzle-driven coding series inspired by Advent of Code, featuring weekly Python programming challenges and an ongoing narrative."
+    />
+    <!-- <meta property="og:image" content="{{ url_for('static', filename='img/social-preview.png', _external=True) }}" /> -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://adventure.practicalpython.org{{ request.path }}"
+    />
+    <!-- twitter:card becomes "summary_large_image" after image added -->
+    <meta name="twitter:card" content="summary" />
+
+    <title>
+      Practical Python Code Adventure | Advent of Code Inspired Python Puzzles
+    </title>
+    <link
+      rel="canonical"
+      href="https://adventure.practicalpython.org/{{ request.path }}"
+    />
     {%- for style in css_files %}
     <link
       href="{{ url_for('static', filename='style/' ~ style ~ '.css') }}"
@@ -11,6 +35,9 @@
       type="text/css"
     />
     {%- endfor %}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
       rel="stylesheet"
