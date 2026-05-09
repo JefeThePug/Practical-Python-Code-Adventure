@@ -37,6 +37,7 @@ def create_app() -> AppFlask:
 
     from .blueprints import (
         admin_bp,
+        api_bp,
         auth_bp,
         challenge_bp,
         errors_bp,
@@ -56,6 +57,7 @@ def create_app() -> AppFlask:
         challenge_bp,
         admin_bp,
         errors_bp,
+        api_bp,
     ):
         app.register_blueprint(bp)
 
