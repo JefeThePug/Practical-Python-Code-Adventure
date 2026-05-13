@@ -1,0 +1,15 @@
+prices = {
+    "Fresh Water": 199.80,
+    "Charcoal": 259.30,
+    "Grain": 299.20,
+    "Mushrooms": 399.70,
+    "Giant Fish": 459.90,
+    "Berries": 599.10,
+    "Glass": 649.40,
+    "Honey": 699.00,
+    "Amber": 749.70,
+    "Quartz": 799.50,
+    "Shells": 849.10,
+    "Gems": 899.40,
+    "Gold": 899.60,
+}

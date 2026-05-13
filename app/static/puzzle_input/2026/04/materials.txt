@@ -1,0 +1,15 @@
+materials = {
+    "Mud": "Fresh Water",
+    "Volcanic Ash": "Charcoal",
+    "Grass": "Grain",
+    "Fallen Logs": "Mushrooms",
+    "Deep Water": "Giant Fish",
+    "Thorns": "Berries",
+    "Sand": "Glass",
+    "Flowers": "Honey",
+    "Forests": "Amber",
+    "Permafrost": "Quartz",
+    "Shallow Water": "Shells",
+    "Pebbles": "Gems",
+    "Rocks": "Gold",
+}
