@@ -41,6 +41,7 @@ block main %}
     </p>
     <p>Please join the server, then click below to gain access:</p>
     <form id="access" action="/access" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       <button class="access-button">Click Here</button>
     </form>
     {% endif %}
