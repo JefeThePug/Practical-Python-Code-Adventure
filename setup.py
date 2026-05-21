@@ -11,8 +11,7 @@ from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM as Encryption
 from dotenv import load_dotenv
 from flask import Flask
-from sqlalchemy import create_engine, event, inspect, text
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import create_engine, event, text
 
 load_dotenv(Path(__file__).resolve().parent / ".env")
 
