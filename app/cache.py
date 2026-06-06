@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.appctx import exception, get_app, log_info
 from app.extensions import db
-from app.types import GlanceRow, SponsorRow, UserRow
+from app.types import ChampionRow, GlanceRow, SponsorRow, UserRow
 
 from .models import (
     DiscordID,
@@ -411,18 +411,26 @@ class DataCache:
             return {}
 
     @staticmethod
+    def _progress(year: str) -> list[Progress]:
+        return (
+            Progress.query.join(User)
+            .filter(Progress.year == year, User.user_id != "609283782897303554")
+            .all()
+        )
+
+    @staticmethod
     @with_ctx
-    def get_all_champions(year: str) -> list[dict[str, str]]:
+    def get_all_champions(year: str) -> list[ChampionRow]:
         """Return users who completed every challenge for the given year."""
         try:
-            all_users = Progress.query.join(User).filter(Progress.year == year).all()
-
-            champions = []
-            for p in all_users:
-                if all(all(s) for s in p.challenge_states()):
-                    champions.append({"name": p.user.name, "github": p.user.github})
-
-            return champions
+            return cast(
+                list[ChampionRow],
+                [
+                    {"name": p.user.name, "github": p.user.github}
+                    for p in DataCache._progress(year)
+                    if all(all(s) for s in p.challenge_states())
+                ],
+            )
         except SQLAlchemyError as e:
             exception("Error fetching champions", e)
             return []
@@ -432,19 +440,18 @@ class DataCache:
     def get_glance(year: str) -> list[GlanceRow]:
         """Return a summary of each user's progress for a year."""
         try:
-            all_users = Progress.query.join(User).filter(Progress.year == year).all()
-
-            glance = []
-            for p in all_users:
-                glance.append(
+            return cast(
+                list[GlanceRow],
+                [
                     {
                         "user_id": p.user.user_id,
                         "name": p.user.name,
                         "github": p.user.github,
                         "progress": p.challenge_states(),
                     }
-                )
-            return glance
+                    for p in DataCache._progress(year)
+                ],
+            )
         except SQLAlchemyError as e:
             exception("Error fetching user progress", e)
             return []

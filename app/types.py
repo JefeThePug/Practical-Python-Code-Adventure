@@ -50,4 +50,10 @@ class UserRow(TypedDict):
 class GlanceRow(TypedDict):
     name: str
     user_id: str
+    github: str | None
     progress: list[list[bool]]
+
+
+class ChampionRow(TypedDict):
+    name: str
+    github: str | None
