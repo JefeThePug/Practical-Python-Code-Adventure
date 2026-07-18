@@ -56,6 +56,13 @@ def champions():
         names.append(champion["name"])
         links.append(champion["github"])
 
+    totals = {i: {1: 0, 2: 0} for i in range(1, 11)}
+    for d in all_data:
+        for i, p in enumerate(d["progress"], 1):
+            s = sum(p)
+            totals[i][1] += s > 0
+            totals[i][2] += s == 2
+
     formatted_data = []
     for d in all_data:
         progress = "".join(
@@ -81,6 +88,7 @@ def champions():
         year=session["year"],
         champions=names,
         githubs=links,
+        totals=totals,
         all_data=formatted_data,
     )
 
