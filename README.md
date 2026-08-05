@@ -79,8 +79,9 @@ DISCORD_BOT_TOKEN="YOUR_BOT_TOKEN"
 
 # Latest Year
 YEAR=2026
-KEY2025="KEY_HERE"
-KEY2026="DIFFERENT_KEY_HERE"
+KEY2025="TO INFINITY AND BEYOND"
+KEY2026="KEY_HERE"
+KEY2027="DIFFERENT_KEY_HERE"
 # Add keys for other released years as needed
 ```
 
@@ -96,7 +97,7 @@ KEY2026="DIFFERENT_KEY_HERE"
 > **YEAR** – Latest challenge year to include (starting from 2025). _Must not exceed released years_.  
 > **KEY####** – Required key to access each year’s challenge and solution data to fill the DB.
 
-To obtain KEYs, contact the project owner via [Discord](https://discord.com/users/609283782897303554) or by [email](mailto:jefethepug@protonmail.com).
+To obtain KEYs, if not provided above, contact the project owner via [Discord](https://discord.com/users/609283782897303554) or by [email](mailto:jefethepug@protonmail.com).
 
 ---
 
