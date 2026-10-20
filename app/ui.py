@@ -11,4 +11,10 @@ ICON_REFERENCE = {
         "b-icon": "mode_heat",
         "b-text": "fire",
     },
+    "2027": {
+        "a-icon": "comedy_mask",
+        "a-text": "comedy mask",
+        "b-icon": "theater_comedy",
+        "b-text": "double theater mask",
+    },
 }
