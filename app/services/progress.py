@@ -13,7 +13,7 @@ def sync_progress(year: str, user_id: str) -> None:
         year (str): Current year.
         user_id (str): The Discord user ID.
     """
-    session["progress"] = get_app().data_cache.load_progress(year, user_id)
+    session["progress"] = get_app().data_access.get_progress(year, user_id)
 
 
 def set_progress(challenge_num: int, progress: int) -> str | None:
@@ -24,9 +24,10 @@ def set_progress(challenge_num: int, progress: int) -> str | None:
     Returns:
         str | None: The serialized progress if user is not logged in, otherwise None.
     """
+    app = get_app()
     if "user_data" in session:
-        # Change database and update Data Cache
-        get_app().data_cache.update_progress(
+        # Update database
+        app.data_access.update_progress(
             session["year"],
             session["user_data"]["id"],
             challenge_num,
@@ -36,7 +37,7 @@ def set_progress(challenge_num: int, progress: int) -> str | None:
         return None
     else:
         # Alter Browser Cookies
-        dumped = get_app().serializer.dumps(f"{challenge_num}{'AB'[progress]}")
+        dumped = app.serializer.dumps(f"{challenge_num}{'AB'[progress]}")
         match dumped:
             case bytes() | bytearray():
                 return dumped.decode("utf-8")
@@ -54,7 +55,7 @@ def get_progress() -> ProgressPayload:
         dict: A dictionary containing user progress and session information.
     """
     if "user_data" in session:
-        # Retrieve information from Flask session and Data Cache
+        # Retrieve information from Flask session
         sync_progress(session["year"], session["user_data"]["id"])
         return {
             "id": session["user_data"]["id"],

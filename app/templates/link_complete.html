@@ -22,6 +22,27 @@ block main %}
 
   <div>
     <p>Well done! You solved both parts of Challenge {{ num }}</p>
+    {% if show_github_ask %}
+      <form id="github-form"
+        action="{{ url_for('challenge.complete', year=year, obs_num=obs_num) }}"
+        method="post"
+      >
+      <label for="github">
+        Completing all 10 challenges allows you to link your GitHub account to
+        your name on the Champions page. If you would like to do this, input
+        your GitHub username here:
+      </label>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <span>https://github.com/</span>
+      <input type="text" id="github" name="github_username" required/>
+      <p class="ssm">
+        You cannot change this once submitted. If you made a mistake, contact
+        JefeThePug by <a href="mailto:jefethepug@protonmail.com">email</a> or
+        <a href="https://discord.com/users/609283782897303554">discord</a>.
+      </p>
+      <button type="submit">Submit</button>
+      </form>
+    {% endif %}
 
     {% if in_guild %}
     <p>
@@ -40,7 +61,11 @@ block main %}
       >.
     </p>
     <p>Please join the server, then click below to gain access:</p>
-    <form id="access" action="/access" method="post">
+    <form
+      id="access"
+      action="{{ url_for('challenge.access', year=year, obs_num=obs_num) }}"
+      method="post"
+    >
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       <button class="access-button">Click Here</button>
     </form>

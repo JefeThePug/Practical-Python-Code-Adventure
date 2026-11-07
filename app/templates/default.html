@@ -38,15 +38,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
     <link
       href="{{ url_for('static', filename='favicon.svg') }}"
       rel="icon"
@@ -54,6 +46,7 @@
     />
     <link href="{{ url_for('static', filename='favicon.ico') }}" rel="icon" />
   </head>
+
   <body>
     <a class="skip-link" href="#main-content">Skip to Main content</a>
 
@@ -61,7 +54,7 @@
       <div class="nav">
         {% if request.endpoint != 'main.release' %}
         <a href="{{ url_for('main.index') }}">
-          <span class="material-symbols-outlined"> home </span>
+          <iconify-icon class="symbol" icon="bx:home-alt-2"></iconify-icon>
           <span class="nav-text">Home</span>
         </a>
         {% endif %} {% if request.endpoint == 'main.release' %}

@@ -1,15 +1,25 @@
 from typing import TYPE_CHECKING, TypedDict
+from datetime import datetime
 
 from flask import Flask
 from itsdangerous import URLSafeTimedSerializer
 
+
 if TYPE_CHECKING:
-    from app.cache import DataCache
+    from app.data_access import DataAccess
 
 
 class AppFlask(Flask):
-    data_cache: "DataCache"
+    data_access: "DataAccess"
     serializer: URLSafeTimedSerializer
+
+
+class FanArtRow(TypedDict):
+    name: str | None
+    profile: str | None
+    media_type: str
+    media_link: str
+    message: str | None
 
 
 class ProgressPayload(TypedDict):
@@ -35,6 +45,7 @@ class UserRow(TypedDict):
     user_id: str
     name: str | None
     github: str | None
+    dnd: bool
     c1: list[bool]
     c2: list[bool]
     c3: list[bool]
@@ -48,12 +59,27 @@ class UserRow(TypedDict):
 
 
 class GlanceRow(TypedDict):
-    name: str
+    name: str | None
     user_id: str
     github: str | None
     progress: list[list[bool]]
 
 
 class ChampionRow(TypedDict):
-    name: str
+    name: str | None
     github: str | None
+    complete: datetime | None
+
+
+class LeaderboardRow(TypedDict):
+    id: int
+    name: str
+    is_creator: bool
+    member_count: int
+
+
+class LeaderboardMemberRow(TypedDict):
+    name: str | None
+    progress: list[list[bool]]
+    done: int
+    complete: datetime | None

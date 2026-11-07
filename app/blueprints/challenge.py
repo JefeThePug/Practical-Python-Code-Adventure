@@ -13,6 +13,7 @@ from flask import (
 
 from app.appctx import exception, get_app
 from app.services import get_progress, handle_cooldown, set_progress
+from app.types import AppFlask
 
 challenge_bp = Blueprint("challenge", __name__)
 
@@ -26,6 +27,53 @@ def fix_static(txt: str) -> str:
         str: html text with the correct path for images and files
     """
     return txt.replace("__STATIC__", url_for("static", filename=""))
+
+
+def get_discord_membership(
+    guild: str, uid: str, headers: dict[str, str]
+) -> dict | None:
+    """Fetch a user's guild membership from the Discord API.
+    Args:
+        guild (str): The ID of the Discord guild.
+        uid (str): The Discord user ID.
+        headers (dict): Request headers containing authorization.
+    Returns:
+        dict | None: The Guild Member object if found, otherwise None.
+    """
+    url = f"https://discord.com/api/v9/guilds/{guild}/members/{uid}"
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 404:
+        return None
+    response.raise_for_status()
+    return response.json()
+
+
+def get_challenge_context(app: AppFlask, year: str, obs_num: str) -> tuple | None:
+    """Get challenge and Discord context for a specific challenge.
+    Args:
+        app (app.types.AppFlask): The Flask application instance.
+        year (str): The challenge year.
+        obs_num (str): The obfuscated challenge number.
+    Returns:
+        tuple | None: Challenge number, user data, progress, Discord guild ID,
+            channel ID, and API headers, or None if the bot token is missing.
+    """
+    num = int(app.data_cache.admin.obfuscations[year][obs_num])
+    user = get_progress()
+    progress = user["progress"][f"c{num}"]
+
+    bot_token = app.config["DISCORD_BOT_TOKEN"]
+    if not bot_token:
+        return None
+
+    guild_id = app.data_cache.admin.discord_ids["0"]["guild"]
+    channel_id = app.data_cache.admin.discord_ids[year][f"{num}"]
+    headers = {
+        "Authorization": f"Bot {bot_token}",
+        "Content-Type": "application/json",
+    }
+    return num, user, progress, guild_id, channel_id, headers
 
 
 @challenge_bp.route("/challenge/<year>/<obs_num>", methods=["GET", "POST"])
@@ -52,7 +100,7 @@ def challenge(year: str, obs_num: str):
 
         if not allowed:
             seconds = (wait_ms + 999) // 1000
-            error = f"Too many attempts. Wait {seconds}{'s' if seconds != 1 else ''}."
+            error = f"Too many attempts. Wait {seconds} second{'s' if seconds != 1 else ''}."
         else:
             guesses = [request.form.get(f"answer{i}", None) for i in (1, 2)]
             solutions = app.data_cache.html.solutions[year][num]
@@ -63,13 +111,17 @@ def challenge(year: str, obs_num: str):
                     == solutions[f"part{n + 1}"]
                 ):
                     cookie = set_progress(num, n)
-                    resp = make_response(
-                        redirect(
-                            url_for("challenge.challenge", year=year, obs_num=obs_num)
-                        )
+
+                    redirect_url = url_for(
+                        f"challenge.{('challenge', 'complete')[n]}",
+                        year=year,
+                        obs_num=obs_num,
                     )
+                    resp = make_response(redirect(redirect_url))
+
                     if cookie:
                         resp.set_cookie(cookie, f"{num}{'AB'[n]}")
+
                     return resp
                 else:
                     error = "Incorrect. Please try again."
@@ -108,27 +160,70 @@ def challenge(year: str, obs_num: str):
     return render_template("challenge.html", **params)
 
 
-@challenge_bp.route("/access", methods=["POST"])
-def access():
-    """Grant access to a user and assign roles in Discord.
-
+@challenge_bp.route("/complete/<year>/<obs_num>", methods=["GET", "POST"])
+def complete(year: str, obs_num: str):
+    """Render the success page for a specific challenge week number.
+    Args:
+        year (str): The desired year.
+        obs_num (str): The obfuscated challenge number.
     Returns:
-        Rendered link_complete.html template or error message.
-        or Error message with HTTP status code.
+        Rendered link_complete.html template.
     """
     app = get_app()
-    bot_token = app.config["DISCORD_BOT_TOKEN"]
-    year = session["year"]
-    if not bot_token:
+    context = get_challenge_context(app, year, obs_num)
+    if context is None:
         return "Error: Bot token not found", 500
 
-    num = int(app.data_cache.admin.obfuscations[year][f"{request.form.get('num')}"])
-    user = get_progress()
-
-    guild_id = app.data_cache.admin.discord_ids["0"]["guild"]
+    num, user, progress, guild_id, channel_id, headers = context
     user_id = user["id"]
-    in_guild = True
-    channel_id = app.data_cache.admin.discord_ids[year][f"{num}"]
+    if user_id is None:
+        return "Error: User ID not found", 500
+
+    if not all(progress):
+        return redirect(url_for("challenge.challenge", year=year, obs_num=obs_num))
+
+    if request.method == "POST":
+        github_username = request.form.get("github_username")
+        # save github_id here
+
+    show_github_ask = user["rockets"] and all(all(r) for r in user["rockets"])
+    in_guild = get_discord_membership(guild_id, user_id, headers) is not None
+    egg = app.data_cache.html.html[year][num]["ee"]
+
+    return render_template(
+        "link_complete.html",
+        year=year,
+        img=user["img"],
+        num=num,
+        guild=guild_id,
+        channel=channel_id,
+        in_guild=in_guild,
+        egg=egg,
+        show_github_ask=show_github_ask,
+    )
+
+
+@challenge_bp.route("/access/<year>/<obs_num>", methods=["POST"])
+def access(year: str, obs_num: str):
+    """Grant access to a user and assign roles in Discord.
+    Args:
+        year (str): The desired year.
+        obs_num (str): The obfuscated challenge number.
+    Returns:
+        Redirect to the challenge completion page or an error message.
+    """
+    app = get_app()
+    context = get_challenge_context(app, year, obs_num)
+    if context is None:
+        return "Error: Bot token not found", 500
+
+    num, user, progress, guild_id, channel_id, headers = context
+    user_id = user["id"]
+    if user_id is None:
+        return "Error: User ID not found", 500
+
+    if not all(progress):
+        return "Denied: Challenge not completed", 403
 
     adventurer_role = app.data_cache.admin.discord_ids["0"]["adventurer"]
     roles_to_add = [adventurer_role]
@@ -136,28 +231,21 @@ def access():
         champion_role = app.data_cache.admin.discord_ids[year]["champion"]
         roles_to_add.append(champion_role)
 
-    headers = {"Authorization": f"Bot {bot_token}", "Content-Type": "application/json"}
-    url = f"https://discord.com/api/v9/guilds/{guild_id}/members/{user_id}"
-    response = requests.get(url, headers=headers)
+    member_data = get_discord_membership(guild_id, user_id, headers)
 
-    if response.status_code == 404:
-        in_guild = False
-    elif response.status_code == 200:
-        member_data = response.json()
+    if member_data is not None:
         current_roles = set(member_data.get("roles", []))
 
         for role in roles_to_add:
             if role in current_roles:
                 continue
             try:
-                res = requests.put(f"{url}/roles/{role}", headers=headers)
+                roles_url = f"https://discord.com/api/v9/guilds/{guild_id}/members/{user_id}/roles/{role}"
+                res = requests.put(roles_url, headers=headers)
                 res.raise_for_status()
             except requests.exceptions.RequestException as e:
                 return f"Failed to update roles: {e}", 400
-    else:
-        return f"Unexpected error: {response.status_code}", response.status_code
 
-    if in_guild:
         content = (
             f"<@{user_id}> solved week {num}! If you'd like, "
             "please share how you arrived at the correct answer!"
@@ -170,20 +258,10 @@ def access():
             # User not in thread
             try:
                 requests.put(member_url, headers=headers).raise_for_status()
-                res = requests.post(msg_url, headers=headers, json={"content": content})
-                res.raise_for_status()
+                requests.post(
+                    msg_url, headers=headers, json={"content": content}
+                ).raise_for_status()
             except requests.exceptions.RequestException as e:
                 exception("Thread Message Error", e)
 
-    egg = app.data_cache.html.html[year][num]["ee"]
-
-    return render_template(
-        "link_complete.html",
-        year=year,
-        img=user["img"],
-        num=num,
-        guild=guild_id,
-        channel=channel_id,
-        in_guild=in_guild,
-        egg=egg,
-    )
+    return redirect(url_for("challenge.complete", year=year, obs_num=obs_num))

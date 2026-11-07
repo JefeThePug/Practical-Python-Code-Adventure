@@ -26,13 +26,13 @@ body {
     color: var(--title-text);
 }
 
-.material-symbols-outlined {
+.symbols {
     margin-right: 10px;
     font-size: larger;
     vertical-align: text-bottom;
 }
 
-a:hover .material-symbols-outlined {
+a:hover .symbols {
     font-variation-settings:
             'FILL' 1,
             'wght' 600,

@@ -4,8 +4,8 @@ from itsdangerous import URLSafeTimedSerializer
 
 from app.ui import ICON_REFERENCE
 
-from .cache import DataCache
 from .config import DevConfig, ProdConfig
+from .data_access import DataAccess
 from .extensions import db, generate_csrf_token, validate_csrf
 from .types import AppFlask
 
@@ -33,7 +33,7 @@ def create_app() -> AppFlask:
     app.before_request(validate_csrf)
     app.jinja_env.globals["csrf_token"] = generate_csrf_token
     app.jinja_env.globals["ICONS"] = ICON_REFERENCE
-    app.data_cache = DataCache()
+    app.data_access = DataAccess()
 
     from .blueprints import (
         admin_bp,
@@ -47,7 +47,7 @@ def create_app() -> AppFlask:
     from .templating import register_globals
 
     with app.app_context():
-        app.data_cache.load_all()
+        app.data_access.load()
         register_globals()
 
     for bp in (

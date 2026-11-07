@@ -10,5 +10,8 @@ def leaderboard(year: str) -> Response:
     """
     Output leaderboard data for a given year in JSON format
     """
-    all_data = get_app().data_cache.get_glance(str(year))
+    all_data = get_app().data_access.get_glance(str(year))
     return jsonify(all_data)
+
+
+# TODO Add api calls for individual leaderboards

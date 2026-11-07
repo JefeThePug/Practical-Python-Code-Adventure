@@ -15,7 +15,7 @@ hr {
     margin: 15px 0;
 }
 
-.material-symbols-outlined {
+.symbols {
     transform: translateY(-5px);
     color: var(--select);
 }

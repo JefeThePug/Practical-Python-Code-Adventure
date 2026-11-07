@@ -19,7 +19,7 @@ def register_globals():
         Returns:
             str | int: The obfuscated value.
         """
-        return app.data_cache.admin.html_nums[year][value]
+        return app.data_access.admin.html_nums[year][value]
 
     @app.template_global()
     def obscure_post(value: str | int) -> str:
@@ -31,7 +31,7 @@ def register_globals():
         """
         if isinstance(value, str):
             value = int(value)
-        return f"{app.data_cache.admin.obfuscations[session['year']][int(value)]}"
+        return f"{app.data_access.admin.obfuscations[session['year']][int(value)]}"
 
     @app.context_processor
     def inject_css_files() -> dict[str, list[str]]:

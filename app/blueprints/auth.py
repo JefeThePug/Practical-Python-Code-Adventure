@@ -85,10 +85,10 @@ def callback():
     user_id = user_data.get("id")
     if not user_id:
         return "Error: Invalid user data", 400
-    progress = get_app().data_cache.load_progress(session["year"], user_id)
+    progress = get_app().data_access.load_progress(session["year"], user_id)
 
     if not progress:
-        added = get_app().data_cache.add_user(
+        added = get_app().data_access.add_user(
             session["user_data"]["id"], session["user_data"]["username"]
         )
         if not added:

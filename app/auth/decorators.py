@@ -13,7 +13,7 @@ def admin_only(func):
         user = session.get("user_data")
         if not user:
             abort(401)
-        if user["id"] not in get_app().data_cache.admin.get_permissions(login=True):
+        if user["id"] not in get_app().data_access.admin.get_permissions(login=True):
             abort(403)
         return func(*args, **kwargs)
 
