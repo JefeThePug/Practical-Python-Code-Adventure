@@ -1,0 +1,52 @@
+:root {
+  --b-main: #4e2926;
+  --b-sec: #f0e2c5;
+  --b-code: #dde1e6;
+  --b-focus1: #6e5664;
+  --b-focus2: #160d20;
+  --b-focus3: #2d1b42;
+
+  --t-main: #222b3a;
+  --t-focus: #6a3d9a;
+  --t-focus-shadow: #cdbbeb;
+  --t-link: #a6333a;
+  --t-nav: #112c5a;
+  --t-nav-special: #f1c40f;
+
+  --i-on: #819a3c;
+  --i-off: #babcbc;
+
+  --c-main: #347426;
+  --c-final: #b59a00;
+  --unused: #1e4620;
+}
+
+.intro {
+  font-family: "Henny Penny", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: xx-large;
+  text-align: center;
+}
+
+.logo-container {
+  border-style: ridge;
+  border-width: 8px;
+  border-color: var(--unused) var(--c-main) var(--c-main) var(--unused);
+  margin-top: 20px;
+}
+
+/* Sections */
+
+.section {
+  background-clip: padding-box;
+  border-image: url(../../images/border_bg/2027.png) 32 repeat;
+}
+
+.shimmer {
+  border-top: var(--t-main) solid 2px;
+  border-radius: 0;
+  box-shadow: none;
+  offset: none;
+  width: auto;
+}

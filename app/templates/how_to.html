@@ -61,24 +61,16 @@ block main %}
     </p>
     <p>
       {% for condition in ("off", "on") %}
-      <span class="material-symbols-outlined icon {{ condition }}">
-        {{ ICONS[year]["a-icon"] }}
-      </span>
-      <span class="material-symbols-outlined icon {{ condition }}">
-        {{ ICONS[year]["b-icon"] }}
-      </span>
+      <iconify-icon class="symbols icon {{ condition }}" icon="{{ ICONS[year]['a-icon'] }}" aria-hidden="true"></iconify-icon>
+      <iconify-icon class="symbols icon {{ condition }}" icon="{{ ICONS[year]['b-icon'] }}" aria-hidden="true"></iconify-icon>
       {% endfor %}
     </p>
     <p>
       These icons will light up when you have completed each part of the
       challenge:<br />the
-      <span class="material-symbols-outlined icon on">
-        {{ ICONS[year]["a-icon"] }}
-      </span>
+      <iconify-icon class="symbols icon on" icon="{{ ICONS[year]['a-icon'] }}" aria-hidden="true"></iconify-icon>
       {{ ICONS[year]["a-text"] }} for Part 1 and the
-      <span class="material-symbols-outlined icon on">
-        {{ ICONS[year]["b-icon"] }}
-      </span>
+      <iconify-icon class="symbols icon on" icon="{{ ICONS[year]['b-icon'] }}" aria-hidden="true"></iconify-icon>
       {{ ICONS[year]["b-text"] }} for Part 2.
     </p>
     <p>

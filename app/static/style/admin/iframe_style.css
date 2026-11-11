@@ -16,8 +16,8 @@ hr {
 }
 
 .symbols {
-    transform: translateY(-5px);
-    color: var(--select);
+    font-size: 24px;
+    vertical-align: middle;
 }
 
 /* Utility classes */
@@ -105,7 +105,9 @@ form {
 }
 
 form input[type="submit"],
-form input[type="button"] {
+form input[type="button"],
+form button[type="button"] {
+    font-family: inherit;
     color: var(--text);
     background-color: transparent;
     border: 2px solid var(--text);

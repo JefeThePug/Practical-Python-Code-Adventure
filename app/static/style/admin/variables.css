@@ -8,6 +8,10 @@
     --select: #ff3355;
 }
 
+body {
+    font-family: system-ui, sans-serif;
+}
+
 p {
     margin: 0;
 }

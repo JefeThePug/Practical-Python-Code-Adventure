@@ -17,7 +17,6 @@ from app.services import (
     get_avatar_url,
     get_progress,
     get_user_data,
-    sync_progress,
 )
 
 auth_bp = Blueprint("auth", __name__)
@@ -85,15 +84,11 @@ def callback():
     user_id = user_data.get("id")
     if not user_id:
         return "Error: Invalid user data", 400
-    progress = get_app().data_access.load_progress(session["year"], user_id)
-
+    # get_progress creates the user and their progress row if missing
+    progress = get_app().data_access.get_progress(session["year"], user_id)
     if not progress:
-        added = get_app().data_access.add_user(
-            session["user_data"]["id"], session["user_data"]["username"]
-        )
-        if not added:
-            return redirect(url_for("auth.logout"))
-    sync_progress(session["year"], user_id)
+        return redirect(url_for("auth.logout"))
+    session["progress"] = progress
 
     return redirect(url_for("main.index"))
 

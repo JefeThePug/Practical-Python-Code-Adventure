@@ -6,7 +6,7 @@ from app.types import ProgressPayload
 
 def sync_progress(year: str, user_id: str) -> None:
     """Synchronize the user's progress from the database into the session.
-    Loads the user's progress via the DataCache and stores it in the Flask
+    Loads the user's progress via DataAccess and stores it in the Flask
     session so request handlers and templates can access it without
     additional database queries.
     Args:

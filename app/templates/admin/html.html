@@ -57,8 +57,10 @@
 
         <div class="indent actions">
             <input type="button" value="CANCEL" onclick="updateLocation()">
-            <input type="button" value="print" class="blue material-symbols-outlined"
-                   onclick="this.form.action='/admin/html/print'; this.form.submit();">
+            <button type="button" class="blue" title="Print YAML" aria-label="Print YAML"
+                    onclick="this.form.action='/admin/html/print'; this.form.submit();">
+                <iconify-icon class="symbols" icon="material-symbols:print-outline"></iconify-icon>
+            </button>
             <input type="submit" value="SAVE">
         </div>
         <p class="indent blue sm" align="center">

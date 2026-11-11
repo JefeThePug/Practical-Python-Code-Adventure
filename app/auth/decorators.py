@@ -6,7 +6,7 @@ from app.appctx import get_app
 
 
 def admin_only(func):
-    """Restrict route access to users present in the admin permission cache."""
+    """Restrict route access to users with an admin permission."""
 
     @wraps(func)
     def wrapper(*args, **kwargs):

@@ -49,8 +49,8 @@ def champions():
 
     user = get_progress()
 
-    champion_list = app.data_cache.get_all_champions(session["year"])
-    all_data = app.data_cache.get_glance(session["year"])
+    champion_list = app.data_access.get_all_champions(session["year"])
+    all_data = app.data_access.get_glance(session["year"])
     names, links = [], []
     for champion in champion_list:
         names.append(champion["name"])
@@ -113,7 +113,7 @@ def sponsor():
     """
     user = get_progress()
 
-    t1, t2, t3 = get_app().data_cache.admin.get_sponsors()
+    t1, t2, t3 = get_app().data_access.admin.get_sponsors()
     return render_template(
         "sponsor.html",
         img=user["img"],

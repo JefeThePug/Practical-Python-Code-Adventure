@@ -8,7 +8,6 @@ html, body {
 
 body {
     margin: 0;
-    font-family: system-ui, sans-serif;
     background-color: var(--bg);
     color: var(--text);
     overflow: hidden;
@@ -32,12 +31,14 @@ body {
     vertical-align: text-bottom;
 }
 
-a:hover .symbols {
-    font-variation-settings:
-            'FILL' 1,
-            'wght' 600,
-            'GRAD' 0,
-            'opsz' 24;
+/* Sidebar icons: outlined by default, filled on hover */
+.symbols.fill,
+a:hover .symbols.line {
+    display: none;
+}
+
+a:hover .symbols.fill {
+    display: inline-block;
 }
 
 .layout {

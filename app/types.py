@@ -40,12 +40,15 @@ class SponsorRow(TypedDict):
     bucket: str
 
 
-class UserRow(TypedDict):
+class _UserRowOptional(TypedDict, total=False):
+    dnd: bool  # optional: omitted means keep the stored value
+
+
+class UserRow(_UserRowOptional):
     id: int
     user_id: str
     name: str | None
     github: str | None
-    dnd: bool
     c1: list[bool]
     c2: list[bool]
     c3: list[bool]

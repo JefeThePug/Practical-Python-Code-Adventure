@@ -10,4 +10,8 @@
     --silver-gradient: linear-gradient(var(--degree), #70706F, #C0C0C0, #E3E3E3);
     --gold-gradient: linear-gradient(var(--degree), #A57C01, #B79001, #FFDF01);
     --soft-light: linear-gradient(var(--degree), rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35));
+
+    /* Font stacks */
+    --font-main: "Roboto Mono", monospace; /* loaded from Google Fonts in default.html */
+    --font-code: "DejaVu Sans Mono", monospace; /* self-hosted, see _base.css */
 }

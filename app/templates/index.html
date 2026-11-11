@@ -18,16 +18,18 @@
         href="{{ url_for('challenge.challenge', year=year, obs_num=obfuscate(year, week)) }}"
         >Week&nbsp;{{ "%2d" | format(week) }}</a
       >
-      <span
-        class="material-symbols-outlined icon {{ ('off', 'on')[rockets[week - 1][0]] }}"
-      >
-        {{ ICONS[year]["a-icon"] }}
-      </span>
-      <span
-        class="material-symbols-outlined icon {{ ('off', 'on')[rockets[week - 1][1]] }}"
-      >
-        {{ ICONS[year]["b-icon"] }}
-      </span>
+      <iconify-icon
+        class="symbols icon {{ ('off', 'on')[rockets[week - 1][0]] }}"
+        icon="{{ ICONS[year]['a-icon'] }}"
+        role="img"
+        aria-label="Part 1 {{ 'complete' if rockets[week - 1][0] else 'incomplete' }}"
+      ></iconify-icon>
+      <iconify-icon
+        class="symbols icon {{ ('off', 'on')[rockets[week - 1][1]] }}"
+        icon="{{ ICONS[year]['b-icon'] }}"
+        role="img"
+        aria-label="Part 2 {{ 'complete' if rockets[week - 1][1] else 'incomplete' }}"
+      ></iconify-icon>
     </li>
     {% endfor %}
   </ul>

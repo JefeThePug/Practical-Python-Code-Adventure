@@ -36,7 +36,7 @@
       <li>
         {% if githubs[i] %}
         <a href="https://github.com/{{ githubs[i] }}" target="_blank" rel="noopener noreferrer nofollow" >
-          {{ champions[i] }} <i class="devicon-github-original"></i>
+          {{ champions[i] }} <iconify-icon icon="mdi:github" aria-hidden="true"></iconify-icon>
         </a>
         {% else %}
         <span class="false-link">
@@ -86,7 +86,7 @@
             <span class="{{ 'on' if part == 1 else 'b' }}">
               {{ total }}
               {% if total > 0 %}
-              <span class="material-symbols-outlined" style="vertical-align:bottom;">accessibility_new</span>
+              <iconify-icon class="symbols" icon="material-symbols:accessibility-new" style="vertical-align:bottom;" aria-hidden="true"></iconify-icon>
               {% endif %}
             </span>
           </td>

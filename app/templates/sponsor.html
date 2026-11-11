@@ -39,7 +39,7 @@ endblock %} {% block main %}
       <ul>
         <li>Your username is listed as a Pathfinder Level Patron</li>
         <li>
-          Your GitHub profile <i class="devicon-github-original"></i> is linked
+          Your GitHub profile <iconify-icon icon="mdi:github" aria-hidden="true"></iconify-icon> is linked
         </li>
       </ul>
       <li class="tier2-key">Tier 2: Explorer Level</li>
@@ -158,7 +158,7 @@ endblock %} {% block main %}
       <li class="{{ sponsor.type }}">
         {% if sponsor.type == 'pathfinder' %}
         <a href="{{ sponsor.website }}">
-          <p>{{ sponsor.name }} <i class="devicon-github-original"></i></p>
+          <p>{{ sponsor.name }} <iconify-icon icon="mdi:github" aria-hidden="true"></iconify-icon></p>
         </a>
         {% else %}
         <p>{{ sponsor.name }}</p>

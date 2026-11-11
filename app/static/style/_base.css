@@ -1,23 +1,26 @@
 @font-face {
-    font-family: 'dejavu_sans_monobook';
-    src: url('DejaVuSansMono-webfont.woff') format('woff');
+    font-family: "DejaVu Sans Mono";
+    src: local("DejaVu Sans Mono"), local("DejaVuSansMono"),
+         url("DejaVuSansMono-webfont.woff") format("woff");
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 
 /* Base layout + typography */
 html, body {
     background-color: var(--b-main);
     color: var(--t-main);
-    font-family: "Roboto Mono", monospace;
-    font-optical-sizing: auto;
+    font-family: var(--font-main);
     font-weight: 400;
     font-size: medium;
     margin: 0;
 }
 
+/* Iconify icons (same size the Material Symbols font rendered at) */
 .symbols {
-    font-size: 10px;
+    font-size: 24px;
+    line-height: 1;
 }
 
 a {

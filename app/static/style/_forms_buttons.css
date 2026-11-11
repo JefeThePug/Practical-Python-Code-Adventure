@@ -33,7 +33,7 @@ button {
   border: none;
   white-space: nowrap;
   color: var(--t-focus);
-  font-family: "Roboto Mono", monospace;
+  font-family: inherit;
   font-size: 15px;
   font-weight: bold;
   cursor: pointer;
@@ -58,7 +58,7 @@ button {
   background-color: var(--b-code);
   border: none;
   display: block;
-  font-family: "DejaVu Sans Mono", monospace;
+  font-family: var(--font-code);
   font-size: large;
   font-weight: bold;
   margin-bottom: 10px;
@@ -98,7 +98,7 @@ button {
 }
 
 .mono {
-  font-family: "DejaVu Sans Mono", monospace !important;
+  font-family: var(--font-code) !important;
 }
 
 /* Dialogs */

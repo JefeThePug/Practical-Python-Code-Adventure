@@ -7,13 +7,7 @@ block main %}
     <video autoplay muted playsinline id="vid">
       <source src="{{ img_src }}" type="video/mp4" />
     </video>
-    <span
-      id="replay-btn"
-      class="material-symbols-outlined"
-      style="cursor: pointer"
-    >
-      replay
-    </span>
+    <iconify-icon id="replay-btn" class="symbols" icon="material-symbols:replay" title="Replay" aria-label="Replay" style="cursor: pointer"></iconify-icon>
     <script
       src="{{ url_for('static', filename='js/replay.js') }}"
       defer
@@ -91,7 +85,7 @@ block main %}
 <section class="section" id="easter-egg">
   <div>
     <p class="sm">
-      <span class="material-symbols-outlined icon egg">egg</span>
+      <iconify-icon class="symbols icon egg" icon="material-symbols:egg-outline" aria-hidden="true"></iconify-icon>
       <span class="egg">{{ egg|safe }}</span>
     </p>
   </div>

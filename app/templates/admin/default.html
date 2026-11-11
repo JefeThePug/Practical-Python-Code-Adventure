@@ -4,10 +4,7 @@
     <meta charset="UTF-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Admin Portal</title>
-    <link
-            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-            rel="stylesheet"
-    />
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
     <link
             href="{{ url_for('static', filename='style/admin/variables.css') }}"
             rel="stylesheet"
@@ -27,7 +24,7 @@
 </head>
 <body>
 <header class="top">
-    <span class="material-symbols-outlined"> admin_panel_settings </span>
+    <iconify-icon class="symbols" icon="material-symbols:admin-panel-settings-outline" aria-hidden="true"></iconify-icon>
     Practical Python Code Adventure Admin Portal
 </header>
 <div class="layout">
@@ -37,49 +34,49 @@
         <nav class="label">
             <a href="{{ url_for('admin.release') }}" target="content">
                 <p class="b">
-                    <span class="material-symbols-outlined">rocket_launch</span>
+                    <iconify-icon class="symbols line" icon="material-symbols:rocket-launch-outline" aria-hidden="true"></iconify-icon><iconify-icon class="symbols fill" icon="material-symbols:rocket-launch" aria-hidden="true"></iconify-icon>
                     Release Cap
                 </p>
             </a>
             <p class="subtext">Update release number for each year</p>
             <a href="{{ url_for('admin.discord') }}" target="content">
                 <p>
-                    <span class="material-symbols-outlined">quick_reference</span>
+                    <iconify-icon class="symbols line" icon="material-symbols:quick-reference-outline" aria-hidden="true"></iconify-icon><iconify-icon class="symbols fill" icon="material-symbols:quick-reference" aria-hidden="true"></iconify-icon>
                     Edit Discord IDs
                 </p>
             </a>
             <p class="subtext">Change Server, Role, and Channel IDs</p>
             <a href="{{ url_for('admin.html') }}" target="content">
                 <p>
-                    <span class="material-symbols-outlined">newsmode</span>
+                    <iconify-icon class="symbols line" icon="material-symbols:newsmode-outline" aria-hidden="true"></iconify-icon><iconify-icon class="symbols fill" icon="material-symbols:newsmode" aria-hidden="true"></iconify-icon>
                     Edit HTML
                 </p>
             </a>
             <p class="subtext">Edit challenge HTML for each year</p>
             <a href="{{ url_for('admin.solutions') }}" target="content">
                 <p>
-                    <span class="material-symbols-outlined">emoji_objects</span>
+                    <iconify-icon class="symbols line" icon="material-symbols:emoji-objects-outline" aria-hidden="true"></iconify-icon><iconify-icon class="symbols fill" icon="material-symbols:emoji-objects" aria-hidden="true"></iconify-icon>
                     Edit Solutions
                 </p>
             </a>
             <p class="subtext">Edit solutions for each year</p>
             <a href="{{ url_for('admin.user') }}" target="content">
                 <p>
-                    <span class="material-symbols-outlined">leaderboard</span>
+                    <iconify-icon class="symbols line" icon="material-symbols:leaderboard-outline" aria-hidden="true"></iconify-icon><iconify-icon class="symbols fill" icon="material-symbols:leaderboard" aria-hidden="true"></iconify-icon>
                     Edit User Progress
                 </p>
             </a>
             <p class="subtext">Edit user progress and GitHub link</p>
             <a href="{{ url_for('admin.sponsor') }}" target="content">
                 <p>
-                    <span class="material-symbols-outlined">volunteer_activism</span>
+                    <iconify-icon class="symbols line" icon="material-symbols:volunteer-activism-outline" aria-hidden="true"></iconify-icon><iconify-icon class="symbols fill" icon="material-symbols:volunteer-activism" aria-hidden="true"></iconify-icon>
                     Edit Sponsors
                 </p>
             </a>
             <p class="subtext">Edit list of sponsors and their links</p>
             <a href="{{ url_for('admin.perms') }}" target="content">
                 <p>
-                    <span class="material-symbols-outlined">admin_panel_settings</span>
+                    <iconify-icon class="symbols line" icon="material-symbols:admin-panel-settings-outline" aria-hidden="true"></iconify-icon><iconify-icon class="symbols fill" icon="material-symbols:admin-panel-settings" aria-hidden="true"></iconify-icon>
                     Update Admins
                 </p>
             </a>

@@ -13,22 +13,47 @@
     <form action="/admin/release" method="POST">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <h2>Change Release</h2>
-        {% for y in years %}
         <div class="form-group">
-            <label for="{{ y }}">
-                <span class="b">{{ y }}</span>: Up to Week
+            <label for="year">Challenge Year:</label>
+            <select id="year" name="year" onchange="updateLocation()">
+                {% for y in years %}
+                <option value="{{ y }}" {{ 'selected' if y == selected_year }}>
+                    {{ y }}
+                </option>
+                {% endfor %}
+            </select>
+            <span class="alert">  ‼️Changing the year will discard any unsaved changes.</span>
+        </div>
+
+        <div class="form-group">
+            <label for="all_on">
+                <span class="b">All weeks on</span> (ignores and clears the times below)
             </label>
-            <input id="{{ y }}" name="{{ y }}" value="{{ release[y] }}"
-                   type="number" min="0" max="10" step="1" required/>
+            <input id="all_on" name="all_on" type="checkbox" {{ 'checked' if all_on }}/>
+        </div>
+        <hr>
+
+        {% for n in range(1, 11) %}
+        <div class="form-group">
+            <label for="r{{ n }}">Week {{ n }} (UTC):</label>
+            <input id="r{{ n }}" name="r{{ n }}" value="{{ releases[n] }}"
+                   type="datetime-local"/>
         </div>
         {% endfor %}
+        <p>Leave a week blank to keep it unreleased.</p>
         <hr>
+
         <div class="actions">
-            <a href="{{ url_for('admin.release') }}">
-                <input type="button" value="CANCEL"/>
-            </a>
+            <input type="button" value="CANCEL" onclick="updateLocation()">
             <input type="submit" value="SAVE">
         </div>
     </form>
 </section>
+
+<script>
+    function updateLocation() {
+        const year = document.getElementById('year').value;
+        window.location.href = "{{ url_for('admin.release') }}?year=" + year;
+    }
+</script>
 {% endblock %}

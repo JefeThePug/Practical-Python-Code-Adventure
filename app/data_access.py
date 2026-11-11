@@ -849,9 +849,12 @@ class DataAccess:
             for data in users:
                 name = (data["name"] or "").strip() or None
                 github = self._clean_github(data["github"])
-                dnd = self._resolve_dnd(github, data["dnd"])
-
                 user = user_map.get(data["id"])
+                # dnd is optional: when not supplied, keep the stored value
+                dnd = self._resolve_dnd(
+                    github, data.get("dnd", user.dnd if user else False)
+                )
+
                 if not user:
                     changed = True
                     user = self._get_or_create_user(data["user_id"], name, github, dnd)

@@ -28,6 +28,12 @@
       rel="canonical"
       href="https://adventure.practicalpython.org/{{ request.path }}"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100..700&family=Henny+Penny&display=swap"
+      rel="stylesheet"
+    />
     {%- for style in css_files %}
     <link
       href="{{ url_for('static', filename='style/' ~ style ~ '.css') }}"
@@ -35,9 +41,10 @@
       type="text/css"
     />
     {%- endfor %}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    {%- for script in js_files %}
+    <script src="{{ url_for('static', filename='js/' ~ script ~ '.js') }}" defer></script>
+    {%- endfor %}
+    <link rel="preconnect" href="https://api.iconify.design" crossorigin />
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
     <link
       href="{{ url_for('static', filename='favicon.svg') }}"
@@ -54,13 +61,21 @@
       <div class="nav">
         {% if request.endpoint != 'main.release' %}
         <a href="{{ url_for('main.index') }}">
-          <iconify-icon class="symbol" icon="bx:home-alt-2"></iconify-icon>
+          <iconify-icon
+            class="symbols"
+            icon="bx:home-alt-2"
+            aria-hidden="true"
+          ></iconify-icon>
           <span class="nav-text">Home</span>
         </a>
         {% endif %} {% if request.endpoint == 'main.release' %}
         <div class="year-wrapper">
           <div class="false-link year-menu" tabindex="0">
-            <span class="material-symbols-outlined"> calendar_clock </span>
+            <iconify-icon
+              class="symbols"
+              icon="material-symbols:calendar-clock-outline"
+              aria-hidden="true"
+            ></iconify-icon>
             <span class="nav-text"> {{ year }} ▾</span>
           </div>
           <div class="dropdown">
@@ -76,19 +91,35 @@
         </div>
         {% endif %}
         <a href="{{ url_for('routes.how_to') }}">
-          <span class="material-symbols-outlined"> help </span>
+          <iconify-icon
+            class="symbols"
+            icon="material-symbols:help-outline"
+            aria-hidden="true"
+          ></iconify-icon>
           <span class="nav-text">How-To</span>
         </a>
         <a href="{{ url_for('routes.champions') }}">
-          <span class="material-symbols-outlined"> trophy </span>
+          <iconify-icon
+            class="symbols"
+            icon="material-symbols:trophy-outline"
+            aria-hidden="true"
+          ></iconify-icon>
           <span class="nav-text">Champions</span>
         </a>
         <a href="{{ url_for('routes.gratitude') }}">
-          <span class="material-symbols-outlined"> favorite </span>
+          <iconify-icon
+            class="symbols"
+            icon="material-symbols:favorite-outline"
+            aria-hidden="true"
+          ></iconify-icon>
           <span class="nav-text">Gratitude</span>
         </a>
         <a href="{{ url_for('routes.sponsor') }}">
-          <span class="material-symbols-outlined"> star_shine </span>
+          <iconify-icon
+            class="symbols"
+            icon="material-symbols:star-shine-outline"
+            aria-hidden="true"
+          ></iconify-icon>
           <span class="nav-text">Sponsors</span>
         </a>
         <a href="{{ url_for('auth.pre_login') }}">
@@ -97,18 +128,24 @@
             set img_src = img %} {% else %} {% set img_src = url_for('static',
             filename='images/no_img.png') %} {% endif %}
             <img alt="Logout" src="{{ img_src }}" />
-            <span class="material-symbols-outlined user-action"
-              >emoji_people</span
-            >
+            <iconify-icon
+              class="symbols user-action"
+              icon="material-symbols:emoji-people"
+              aria-hidden="true"
+            ></iconify-icon>
             <span class="user-action">Logout</span>
             {% else %}
-            <span class="material-symbols-outlined user-label"
-              >emoji_people</span
-            >
+            <iconify-icon
+              class="symbols user-label"
+              icon="material-symbols:emoji-people"
+              aria-hidden="true"
+            ></iconify-icon>
             <span class="user-label">Guest</span>
-            <span class="material-symbols-outlined user-action"
-              >emoji_people</span
-            >
+            <iconify-icon
+              class="symbols user-action"
+              icon="material-symbols:emoji-people"
+              aria-hidden="true"
+            ></iconify-icon>
             <span class="user-action">Login</span>
             {% endif %}
           </div>

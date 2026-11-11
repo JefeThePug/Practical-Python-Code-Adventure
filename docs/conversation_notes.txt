@@ -1,0 +1,181 @@
+CONVERSATION NOTES — Flask App Review & Release-System Planning
+Date: 2026-09-05
+Companion file: docs/code_review.md (full code review, written earlier in this session)
+
+This file captures the design discussion that followed the code review. Nothing
+below has been implemented yet — it's a record of decisions and open questions
+for the next round of work.
+
+=====================================================================
+1. CODE REVIEW
+=====================================================================
+A full review of app/ was written to docs/code_review.md. Highlights that fed
+into the rest of this conversation:
+
+- DataCache is an in-memory cache built once per process in create_app(). With
+  Gunicorn running multiple workers (entrypoint.sh defaults to 2), an admin
+  edit updates the DB plus only the cache copy in whichever worker handled the
+  request — other workers keep serving stale data until restart. User confirmed
+  this actually happened last year (editing challenge HTML in the admin panel
+  wasn't visible on all workers).
+- No timeout= on any outbound `requests` call to Discord (services/discord.py,
+  blueprints/challenge.py) — a slow Discord API can hang a worker indefinitely.
+- `assert app.secret_key` in app/__init__.py is stripped under `python -O` /
+  PYTHONOPTIMIZE=1, so it's not a reliable guard.
+- Discord OAuth login has no `state` parameter (login/account-linking CSRF risk).
+- get_progress() (app/services/progress.py) tries to itsdangerous.loads() any
+  cookie *name* over 40 characters, not just its own cookies — an unrelated
+  stray cookie can throw an uncaught exception and 500 the page.
+- DataCache.update_progress reads session["user_data"]["name"], but Discord's
+  user object (and the rest of the app) uses "username" — latent KeyError on
+  an edge-case path (recreating a deleted user via a challenge answer).
+- See docs/code_review.md for medium/low-impact findings and what's already
+  solid (CSRF handling, cookie config, typing).
+
+=====================================================================
+2. WEBHOOKS / WEBSOCKETS — NOT A FIT YET
+=====================================================================
+- Growth so far: 35 users year 1, 80 year 2 (counting only users who completed
+  at least one challenge part). Even continued doubling keeps this in the low
+  hundreds for the foreseeable future.
+- Webhooks: no current use case — the app only calls OUT to Discord (assigning
+  roles, posting messages in challenge_bp.access()); nothing needs to push
+  events INTO the app.
+- Websockets: traffic doesn't justify the added complexity (worker-class
+  changes, need for genuinely shared state across workers). Plain polling
+  against the existing /api/leaderboard/<year> endpoint, or a lightweight SSE
+  endpoint, gets most of the benefit without the operational cost.
+- Conclusion: revisit only if a concrete real-time feature is needed, not
+  speculatively for growth alone.
+
+=====================================================================
+3. DECISION: DROP THE IN-MEMORY CACHE
+=====================================================================
+- Key realization: get_progress() already hits the DB on every request for
+  logged-in users (via sync_progress -> DataCache.load_progress), so the
+  cache never actually saved that query — it only ever helped for small,
+  admin-controlled reference data (challenge HTML/instructions, obfuscation
+  mappings, Discord channel IDs, release numbers, sponsors, permissions).
+- That reference data is small and cheap to query directly (indexed by
+  year/val), even at hundreds of concurrent users. Recommendation: remove
+  DataCache entirely and query Postgres directly everywhere.
+- If a real performance need ever appears later, the fix is a cache with a
+  SHARED backend (Redis, or a DB updated_at/version check) so every worker
+  sees the same invalidation — never go back to a per-process dict, since
+  that's what caused the original bug regardless of worker count.
+
+=====================================================================
+4. LANDING-PAGE COUNTDOWN (Advent-of-Code style)
+=====================================================================
+- Countdown should be pure client-side JS (setInterval computing
+  target - now from a timestamp embedded in the page) — no server polling,
+  no page reload needed. Existing static/js/cooldown.js is a reasonable
+  pattern/reference for structuring this.
+- IMPORTANT SECURITY POINT: the client-side countdown is cosmetic only. The
+  actual unlock decision must be enforced server-side by comparing server
+  time to a stored release_at timestamp — never trust the client (disabling
+  JS, editing it, or hitting the URL directly must not grant early access).
+- Existing gap found during this discussion: challenge_bp.challenge() does
+  NOT currently check the release number/date at all — the only thing
+  stopping early access to an unreleased week today is that the URL uses an
+  obfuscated week number. This needs to be closed as part of the redesign by
+  adding an explicit server-side release check in that route.
+- Decided AGAINST a cron job that periodically updates a "current release
+  number" in the DB. Reasoning: whether a week is unlocked should be a live
+  computation (now_utc() >= release_at) done at request time, not a stored
+  value that something else has to remember to update — a cron-updated flag
+  reintroduces the same "stale copy in the wrong place" failure mode as the
+  in-memory cache bug.
+- A scheduler/cron IS the right tool for a different kind of thing: genuine
+  one-time side effects that must fire AT a moment (e.g., auto-posting a
+  Discord "Week 4 is live!" announcement). If built later:
+    - Use a standalone script that imports the SQLAlchemy models directly
+      and queries WHERE release_at <= now() AND announced = false, rather
+      than hitting an HTTP endpoint.
+    - Trigger via host cron or a small sidecar container in
+      docker-compose.yml, NOT via APScheduler inside the Flask app itself
+      (would double-fire once per Gunicorn worker).
+    - Mark an `announced` flag after success so retries don't double-post.
+
+=====================================================================
+5. ADMIN "RELEASE" PAGE REDESIGN
+=====================================================================
+Replacing the current single "release number 0-10" per-year text input
+(app/blueprints/admin.py `release()`, app/templates/admin/release.html) with
+a per-week date + time picker, based on a shared mockup.
+
+Per-year mode (3 states), not per-week overrides:
+  - "All On"  -> every week in that year is unlocked, full stop. No timer,
+                 per-week dates are irrelevant. (Intended for past/completed
+                 years like 2025/2026 so admin doesn't need to enter 10 real
+                 historical dates.)
+  - "All Off" -> every week in that year is locked, full stop. No timer.
+  - (neither) -> "Scheduled" mode: each week unlocks individually at its own
+                 release_at timestamp.
+
+Proposed schema changes:
+  - Repurpose the existing Release model (app/models.py): currently
+    `year` + `release_number: int`. Change to `year` + `mode: str`
+    ("on" | "off" | "scheduled").
+  - Add `release_at: datetime | None` to MainEntry (already keyed by
+    year + val = week number) for the scheduled case.
+
+Gating logic (computed live, no cache/cron):
+  - mode == "on"        -> unlocked
+  - mode == "off"       -> locked
+  - mode == "scheduled" -> now_utc() >= main_entry.release_at
+
+Open question (unresolved): when mode == "scheduled", what should the
+landing-page countdown count down to? Likely candidate: the next upcoming
+week's release_at (MIN(release_at) WHERE release_at > now) — not yet decided.
+
+Timezone handling (flagged, not yet decided): the mockup's HH:MM field is
+ambiguous about whose clock it represents. Two options discussed:
+  (a) Label the admin form explicitly as UTC — admin does the mental math,
+      zero extra code.
+  (b) Use <input type="datetime-local"> and convert from the browser's local
+      timezone to UTC via JS before submitting — friendlier but more code.
+  Either way, store release_at as UTC in the DB, since the server-side
+  gating check runs against server time.
+
+=====================================================================
+6. UI MECHANISM FOR THE 3-STATE MODE CONTROL
+=====================================================================
+Settled on: three native HTML radio inputs sharing one `name` attribute
+(not checkboxes, not a from-scratch JS toggle group):
+
+  <input type="radio" name="mode" id="mode-on" value="on">
+  <input type="radio" name="mode" id="mode-off" value="off">
+  <input type="radio" name="mode" id="mode-scheduled" value="scheduled" hidden>
+
+Why this works: radio-group mutual exclusivity is keyed purely on the shared
+`name` attribute — the browser enforces "only one checked" regardless of
+whether an input is visible. So a third, visually hidden radio can represent
+"Scheduled" as the implicit default/fallback state.
+
+Since the hidden radio can't be clicked directly, something else must check
+it programmatically. Decided approach: wire the per-week date/time inputs so
+that editing ANY of them automatically checks the hidden "scheduled" radio
+via JS (`mode-scheduled.checked = true`), which — because they share `name`
+— automatically unchecks "All On"/"All Off". No separate "switch to custom
+schedule" button needed.
+
+Implementation note: use the `hidden` attribute (or CSS) to hide the third
+radio, NOT `disabled` — a disabled input is excluded from form submission
+entirely, which would break the mode value reaching the server.
+
+=====================================================================
+7. STATUS / NEXT STEPS
+=====================================================================
+Nothing in sections 3-6 has been implemented yet. No files besides
+docs/code_review.md and this notes file have been created or modified during
+this session. Suggested next steps when ready to build:
+  - Decide the two open items above (countdown target date source; timezone
+    entry method for the admin form).
+  - Migrate Release.release_number -> Release.mode; add MainEntry.release_at.
+  - Remove DataCache / app.data_cache usage in favor of direct queries.
+  - Add server-side release gating to challenge_bp.challenge() (and any other
+    route currently relying only on obfuscated URLs).
+  - Add timeout= to all requests.* calls; fix the assert on SECRET_KEY; add
+    Discord OAuth `state` handling; fix the session["user_data"]["name"] /
+    "username" mismatch; fix the stray-cookie crash in get_progress().

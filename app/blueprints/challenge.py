@@ -59,7 +59,7 @@ def get_challenge_context(app: AppFlask, year: str, obs_num: str) -> tuple | Non
         tuple | None: Challenge number, user data, progress, Discord guild ID,
             channel ID, and API headers, or None if the bot token is missing.
     """
-    num = int(app.data_cache.admin.obfuscations[year][obs_num])
+    num = int(app.data_access.admin.obfuscations[year][obs_num])
     user = get_progress()
     progress = user["progress"][f"c{num}"]
 
@@ -67,8 +67,9 @@ def get_challenge_context(app: AppFlask, year: str, obs_num: str) -> tuple | Non
     if not bot_token:
         return None
 
-    guild_id = app.data_cache.admin.discord_ids["0"]["guild"]
-    channel_id = app.data_cache.admin.discord_ids[year][f"{num}"]
+    discord_ids = app.data_access.admin.get_discord(year)
+    guild_id = discord_ids.get("0", {}).get("guild", "")
+    channel_id = discord_ids.get(year, {}).get(f"{num}", "")
     headers = {
         "Authorization": f"Bot {bot_token}",
         "Content-Type": "application/json",
@@ -88,7 +89,7 @@ def challenge(year: str, obs_num: str):
     """
     session["year"] = year
     app = get_app()
-    num = int(app.data_cache.admin.html_nums[year][obs_num])
+    num = int(app.data_access.admin.html_nums[year][obs_num])
     error = None
 
     user = get_progress()
@@ -103,12 +104,12 @@ def challenge(year: str, obs_num: str):
             error = f"Too many attempts. Wait {seconds} second{'s' if seconds != 1 else ''}."
         else:
             guesses = [request.form.get(f"answer{i}", None) for i in (1, 2)]
-            solutions = app.data_cache.html.solutions[year][num]
+            solutions = app.data_access.html.get_solution(year, num) or {}
             for n, guess in enumerate(guesses):
                 if (
                     guess
                     and guess.replace("_", " ").upper().strip()
-                    == solutions[f"part{n + 1}"]
+                    == solutions.get(f"part{n + 1}")
                 ):
                     cookie = set_progress(num, n)
 
@@ -126,7 +127,7 @@ def challenge(year: str, obs_num: str):
                 else:
                     error = "Incorrect. Please try again."
 
-    html = app.data_cache.html.html.get(year, {}).get(num, {})
+    html = app.data_access.html.get_html(year, num) or {}
     parts = []
     for part_num in (1, 2):
         part_data = html.get(part_num)
@@ -188,7 +189,7 @@ def complete(year: str, obs_num: str):
 
     show_github_ask = user["rockets"] and all(all(r) for r in user["rockets"])
     in_guild = get_discord_membership(guild_id, user_id, headers) is not None
-    egg = app.data_cache.html.html[year][num]["ee"]
+    egg = (app.data_access.html.get_html(year, num) or {}).get("ee")
 
     return render_template(
         "link_complete.html",
@@ -225,11 +226,13 @@ def access(year: str, obs_num: str):
     if not all(progress):
         return "Denied: Challenge not completed", 403
 
-    adventurer_role = app.data_cache.admin.discord_ids["0"]["adventurer"]
-    roles_to_add = [adventurer_role]
+    discord_ids = app.data_access.admin.get_discord(year)
+    adventurer_role = discord_ids.get("0", {}).get("adventurer")
+    roles_to_add = [adventurer_role] if adventurer_role else []
     if user["rockets"] and all(all(r) for r in user["rockets"]):
-        champion_role = app.data_cache.admin.discord_ids[year]["champion"]
-        roles_to_add.append(champion_role)
+        champion_role = discord_ids.get(year, {}).get("champion")
+        if champion_role:
+            roles_to_add.append(champion_role)
 
     member_data = get_discord_membership(guild_id, user_id, headers)
 

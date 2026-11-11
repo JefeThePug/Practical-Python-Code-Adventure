@@ -34,15 +34,15 @@ def register_globals():
         return f"{app.data_access.admin.obfuscations[session['year']][int(value)]}"
 
     @app.context_processor
-    def inject_css_files() -> dict[str, list[str]]:
-        """Inject global template variables for CSS and border asset selection.
-        Provides:
-            - borders: Year-coded border suffixes (e.g. "2025A", "2025B")
-            - css_files: Ordered list of CSS base names to be loaded by templates
+    def inject_assets() -> dict[str, list[str]]:
+        """Inject global template variables for CSS and JS.
         Returns:
             dict[str, list[str]]: Template context variables available to all
             rendered Jinja templates.
         """
         year = session.get("year") or app.config["CURRENT_YEAR"]
         main_file = "main.min" if app.config["USE_MINIFIED_ASSETS"] else "main"
-        return {"css_files": [main_file, f"year_overrides/style{year}"]}
+        return {
+            "css_files": [main_file, f"year_overrides/style{year}"],
+            "js_files": [f"year_overrides/script{year}"],
+        }
