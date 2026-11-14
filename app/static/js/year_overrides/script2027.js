@@ -83,6 +83,8 @@
 
   document.addEventListener("submit", function (e) {
     const form = e.target;
+    // "OK"/"Close" buttons in popups just close them; no stomp
+    if (form.method === "dialog") return;
     e.preventDefault();
     stomp(() => {
       form.submit();
