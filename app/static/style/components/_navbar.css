@@ -12,64 +12,45 @@
   color: var(--t-nav);
 }
 
+/* text, icons and spacing all scale down with the window */
 .nav {
   display: flex;
   flex: 1;
   justify-content: center;
   align-items: center;
-  gap: 5%;
+  gap: clamp(0.5rem, 2.5vw, 2.5rem);
   height: 30px;
+  font-size: clamp(0.8rem, 0.6rem + 0.5vw, 1rem);
+
+  .symbols {
+    font-size: 1.4em;
+  }
 }
 
 .nav > a,
-.nav > .false-link {
+.menu-trigger {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
   color: var(--t-nav);
   text-decoration: none;
   font-weight: bold;
-  transition: filter 0.15s ease;
+  white-space: nowrap;
+  transition: color 0.15s ease;
 
   &:hover {
-    filter: saturate(10);
+    color: var(--t-nav-special);
   }
 }
 
-.nav a:hover img {
-  filter: saturate(0.05);
+.nav > a {
+  gap: 0.35em;
 }
 
 .nav img {
-  width: 42px;
-  height: 42px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   display: block;
-}
-
-/* User menu (hover swap) */
-.user-menu {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-
-  span {
-    user-select: none;
-  }
-
-  .user-action {
-    display: inline-flex;
-    opacity: 0;
-    color: var(--t-nav-special);
-    transition: opacity 0.15s ease;
-  }
-
-  &:hover {
-    .user-action {
-      opacity: 1;
-    }
-  }
 }
 
 /* Dropdown */
@@ -86,7 +67,6 @@
 
   button {
     display: block;
-    text-decoration: none;
     text-align: center;
     width: 100%;
     padding: 0.25em 0;
@@ -106,8 +86,8 @@
   }
 }
 
-/* Year menu reveals dropdown */
-.year-wrapper {
+/* Menus (year picker, account): trigger reveals dropdown */
+.menu-wrapper {
   position: relative;
 
   &:focus-within .dropdown,
@@ -117,33 +97,39 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .year-wrapper:hover .dropdown {
+  .menu-wrapper:hover .dropdown {
     display: block;
   }
 }
 
-.year-menu {
-  display: inline-flex;
+.menu-trigger {
   flex-shrink: 0;
-  align-items: center;
-  gap: 0.5rem;
+  gap: 0.35em;
   cursor: pointer;
-  color: var(--t-nav);
   padding: 5px;
+  user-select: none;
 }
 
-/* responsive helper */
-@media (max-width: 950px) {
+/* account menu sits at the right end, so its dropdown lines up on the right */
+.user-wrapper .dropdown {
+  left: auto;
+  right: 0;
+}
+
+/* Responsive: tablet and below, icons only */
+@media (max-width: 900px) {
   .nav-text {
     display: none;
   }
+
   .nav {
     gap: 1rem;
     padding-left: 1.5rem;
   }
 }
 
-@media (max-width: 450px) {
+/* Responsive: phone */
+@media (max-width: 600px) {
   .nav {
     justify-content: flex-start;
   }

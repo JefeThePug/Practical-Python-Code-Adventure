@@ -10,8 +10,8 @@
   --t-focus: #6a3d9a;
   --t-focus-shadow: #cdbbeb;
   --t-link: #a6333a;
-  --t-nav: #112c5a;
-  --t-nav-special: #f1c40f;
+  --t-nav: #f0e2c5;
+  --t-nav-special: #fbee00;
 
   --i-on: #819a3c;
   --i-off: #babcbc;
@@ -36,8 +36,6 @@
   margin-top: 20px;
 }
 
-/* Sections */
-
 .section {
   background-clip: padding-box;
   border-image: url(../../images/border_bg/2027.png) 32 repeat;
@@ -47,6 +45,43 @@
   border-top: var(--t-main) solid 2px;
   border-radius: 0;
   box-shadow: none;
-  offset: none;
   width: auto;
+}
+
+.navbar {
+  background-color: transparent;
+  &::before {
+    background: url("/static/images/border_bg/2027B.png") center top /
+      max(100%, 1924px) 163px no-repeat;
+    content: "";
+    height: 163px;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: -1;
+  }
+}
+
+header.section {
+  border: none;
+  border-radius: 0 0 50% 50%;
+  font-family: "Henny Penny", cursive;
+  padding: 35px 0 5px;
+}
+
+/* Responsive: phone */
+@media (max-width: 600px) {
+  .intro {
+    font-size: x-large;
+  }
+}
+
+.dropdown {
+  & button {
+    &:hover {
+      color: var(--t-link);
+    }
+  }
 }

@@ -25,7 +25,7 @@ header.section {
 
 .section {
   background: var(--b-sec);
-  border: 32px solid transparent;
+  border: var(--section-border) solid transparent;
   color: var(--t-main);
   filter: drop-shadow(0 2px 3px var(--trans-80));
   padding: 5px 16px;
@@ -34,7 +34,7 @@ header.section {
 
   &::before,
   &::after {
-    border: 32px solid transparent;
+    border: var(--section-border) solid transparent;
     content: "";
     pointer-events: none;
     position: absolute;
@@ -59,16 +59,16 @@ header.section {
   }
 }
 
-.logo-container img {
-  max-height: 500px;
-}
-
 .img-container img {
   max-height: 400px;
 }
 
 .logo-container {
   box-shadow: 2px 2px 22px 0 var(--t-main);
+
+  img {
+    max-height: 500px;
+  }
 }
 
 .shadow {
@@ -88,6 +88,7 @@ header.section {
 
 .container-item {
   margin: 5px;
+  max-width: 100%;
 }
 
 .column {
@@ -95,6 +96,7 @@ header.section {
 
   &:first-child {
     width: max-content;
+    max-width: 100%;
   }
 
   &:last-child {
@@ -106,13 +108,6 @@ header.section {
 .spacer {
   display: block;
   margin: max(25px, 1vw);
-}
-
-.keyitem {
-  box-sizing: border-box;
-  height: 100px;
-  margin-top: 10px;
-  width: 50%;
 }
 
 #help {
@@ -151,17 +146,12 @@ table {
 th,
 td,
 tr {
-  border-color: var(--t-main);
-  border-width: 1px;
+  border: 1px solid var(--t-main);
   padding: 5px;
   text-align: center;
-  border-style: solid;
 }
 
 td {
-  border-left-style: solid;
-  border-right-style: solid;
-
   &.select {
     background-color: var(--t-link) !important;
   }
@@ -181,14 +171,34 @@ td {
   color: var(--c-final);
 }
 
-/* Responsive tweaks */
+/* Responsive: tablet and below */
 @media (max-width: 900px) {
   h1 {
     font-size: large;
   }
 }
 
+/* Responsive: phone */
 @media (max-width: 600px) {
+  :root {
+    --section-border: 16px;
+  }
+
+  section {
+    margin: 8px;
+  }
+
+  .section {
+    padding: 5px 8px;
+  }
+
+  /* wide tables scroll sideways instead of stretching the page */
+  table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
   td {
     font-size: x-small;
   }
@@ -198,6 +208,10 @@ td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .column:last-child {
+    width: 100%;
   }
 
   .sm {

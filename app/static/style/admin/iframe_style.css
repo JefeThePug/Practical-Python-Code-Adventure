@@ -49,16 +49,16 @@ hr {
     margin-left: 40px;
 
     input {
-        width: 95ch;
+        width: min(95ch, 100%);
         max-width: none;
     }
 
     textarea {
-        width: 100ch;
+        width: min(100ch, 100%);
         resize: vertical;
 
         &.short {
-            width: 80ch;
+            width: min(80ch, 100%);
         }
     }
 
@@ -82,6 +82,7 @@ form {
     input[type="text"],
     input[type="number"] {
         flex: 1;
+        min-width: 0;
         padding: 6px 10px;
         border: 1px solid #ccc;
         border-radius: 4px;
@@ -200,16 +201,47 @@ form input[type="submit"] {
     .grid-header.right {
         text-align: right;
     }
+}
 
-    .check-wrap {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border: 2px solid var(--select);
-        width: 18px;
-        height: 18px;
-        padding: 0;
-        margin: 0;
+/* Responsive: tablet and below, wide grids scroll sideways */
+@media (max-width: 900px) {
+    .grid-form .form-group:has(.input-grid) {
+        overflow-x: auto;
     }
 
+    .sponsor .input-grid {
+        min-width: 700px;
+    }
+
+    .user .input-grid {
+        min-width: 900px;
+    }
+}
+
+/* Responsive: phone, labels stack above their fields */
+@media (max-width: 600px) {
+    body {
+        padding: 12px 10px;
+    }
+
+    .indent,
+    .form-group:has(.full) {
+        margin-left: 0 !important;
+    }
+
+    .form-group {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    form label {
+        flex: 0 0 100%;
+        text-align: left;
+        margin-right: 0;
+    }
+
+    .actions {
+        padding-left: 0;
+        gap: 10px;
+    }
 }

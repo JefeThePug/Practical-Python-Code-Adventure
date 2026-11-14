@@ -1,0 +1,183 @@
+.champion-count {
+  margin: 0.5rem 0 1rem;
+}
+
+.champion-wall {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+
+  li {
+    max-width: 100%;
+  }
+}
+
+.champion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  box-sizing: border-box;
+  width: auto;
+  max-width: 100%;
+  padding: 0.15em 0.5em;
+  border: 2px solid var(--t-focus);
+  border-radius: 999px;
+  background: var(--b-code);
+  color: var(--t-main);
+  font-weight: bold;
+  overflow-wrap: anywhere;
+  transition:
+    transform 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+a.champion:hover {
+  transform: translateY(-2px);
+  color: var(--t-link);
+  border-color: var(--t-link);
+}
+
+.champion-trophy {
+  flex-shrink: 0;
+  color: var(--c-final);
+  margin-right: 1em;
+}
+
+.github-icon {
+  margin-left: 0.5em;
+}
+
+.week-chart {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 0.25rem;
+  max-width: 36rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.week-cols {
+  flex: 1 1 14rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.week-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.week-bars {
+  --bar-max: 56px;
+  --count-room: 0.75rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+  width: 100%;
+  height: calc(var(--bar-max) + var(--count-room));
+  border-bottom: 1px solid var(--t-main);
+}
+
+.bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  width: 3.2ch;
+  font-size: 0.6rem;
+}
+
+.bar-count {
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.bar {
+  width: 6px;
+  height: calc(var(--bar-max) * var(--p));
+  border-radius: 2px 2px 0 0;
+}
+
+.week-label {
+  color: var(--t-focus);
+  font-size: 0.75rem;
+}
+
+.part1 {
+  background: var(--i-on);
+}
+
+.part2 {
+  background: var(--t-link);
+}
+
+.chart-key {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0;
+  font-size: 0.75rem;
+
+  .key {
+    display: inline-block;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 2px;
+  }
+
+  .key.part2 {
+    margin-left: 0.5rem;
+  }
+}
+
+#leaderboards {
+  scroll-margin-top: 10rem;
+}
+
+/* label, dropdown and buttons all centred on one line */
+.lb-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 1rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.leaderboards {
+  background-color: var(--b-main);
+  border: var(--t-main) solid 2px;
+  color: var(--t-nav);
+  padding: 1px 5px;
+  width: 102%;
+}
+
+.leaderboard-edits {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+
+  &::after,
+  &::before {
+    content: none;
+  }
+}

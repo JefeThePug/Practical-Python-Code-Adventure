@@ -33,7 +33,6 @@ header {
   &::before,
   &::after {
     border: none !important;
-    animation: none !important;
     mask-image: none !important;
     -webkit-mask-image: none !important;
   }
@@ -42,30 +41,25 @@ header {
 .section {
   border-image: url("/static/images/border_bg/2025A.png") 32 repeat;
   border-radius: 10px 0 10px 0;
-  &::before {
-    inset: -32px;
+
+  /* two wipe strips, half a cycle apart; --wipe-a / --wipe-b are moved by
+     js/year_overrides/script2025.js */
+  &::before,
+  &::after {
+    inset: calc(-1 * var(--section-border));
     z-index: 2;
     border-image: url("/static/images/border_bg/2025B.png") 32 repeat;
-    mask-image: var(--mask-image);
-    mask-repeat: no-repeat;
-    mask-size: 100% 30px;
-    mask-position: 0 100%;
-    -webkit-mask-image: var(--mask-image);
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: 100% 30px;
-    -webkit-mask-position: 0 100%;
-    animation: wipeMask 6s linear infinite;
+    -webkit-mask: var(--mask-image) 0 var(--wipe-y) / 100% 30px no-repeat;
+    mask: var(--mask-image) 0 var(--wipe-y) / 100% 30px no-repeat;
   }
-}
 
-/* Links */
-nav a:hover,
-nav .false-link:hover {
-  filter: saturate(10) brightness(5) !important;
-}
+  &::before {
+    --wipe-y: var(--wipe-a, 100%);
+  }
 
-nav a:hover img {
-  filter: saturate(0.1) brightness(0.2) !important;
+  &::after {
+    --wipe-y: var(--wipe-b, 100%);
+  }
 }
 
 /* Table */
@@ -115,54 +109,17 @@ tbody td:nth-child(even) {
   background-color: var(--b-focus2);
 }
 
-tbody.P0 {
-  :nth-child(2n + 1) {
-    background-color: var(--b-focus2);
-  }
-
-  :nth-child(1) {
-    background-color: var(--b-focus1);
-  }
+/* P0-P4: highlight column N+1 */
+tbody:is(.P0, .P1, .P2, .P3, .P4) :nth-child(2n + 1) {
+  background-color: var(--b-focus2);
 }
 
-tbody.P1 {
-  :nth-child(2n + 1) {
-    background-color: var(--b-focus2);
-  }
-
-  :nth-child(2) {
-    background-color: var(--b-focus1);
-  }
-}
-
-tbody.P2 {
-  :nth-child(2n + 1) {
-    background-color: var(--b-focus2);
-  }
-
-  :nth-child(3) {
-    background-color: var(--b-focus1);
-  }
-}
-
-tbody.P3 {
-  :nth-child(2n + 1) {
-    background-color: var(--b-focus2);
-  }
-
-  :nth-child(4) {
-    background-color: var(--b-focus1);
-  }
-}
-
-tbody.P4 {
-  :nth-child(2n + 1) {
-    background-color: var(--b-focus2);
-  }
-
-  :nth-child(5) {
-    background-color: var(--b-focus1);
-  }
+tbody.P0 :nth-child(1),
+tbody.P1 :nth-child(2),
+tbody.P2 :nth-child(3),
+tbody.P3 :nth-child(4),
+tbody.P4 :nth-child(5) {
+  background-color: var(--b-focus1);
 }
 
 .map tbody tr {
@@ -175,17 +132,4 @@ tbody.P4 {
 
 .map td {
   width: 20px;
-}
-
-/* Animations */
-@keyframes wipeMask {
-  0% {
-    mask-position: 0 100%;
-  }
-  60% {
-    mask-position: 0 0%;
-  }
-  100% {
-    mask-position: 0 -100%;
-  }
 }

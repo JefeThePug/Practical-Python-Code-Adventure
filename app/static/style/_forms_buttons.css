@@ -19,7 +19,7 @@ input {
 }
 
 .input {
-  width: 400px;
+  width: min(400px, 100%);
 }
 
 .right {
@@ -49,10 +49,6 @@ button {
   }
 }
 
-.access-button {
-  cursor: pointer;
-}
-
 /* Code blocks */
 .code {
   background-color: var(--b-code);
@@ -64,7 +60,7 @@ button {
   margin-bottom: 10px;
   margin-top: 5px;
   max-height: 100px;
-  max-width: 400px;
+  max-width: min(400px, 100%);
   overflow: hidden;
   padding: 5px 10px;
   text-overflow: ellipsis;
@@ -78,15 +74,11 @@ button {
 
   &.free {
     max-height: none;
-    max-width: none;
+    max-width: 100%;
   }
 
   &.sm {
     font-size: small;
-  }
-
-  &.part.main {
-    width: fit-content;
   }
 }
 
@@ -117,22 +109,10 @@ dialog {
   top: 200px;
   width: 300px;
   z-index: 100;
-
-  &.end {
-    background-color: transparent !important;
-    border: none !important;
-    height: 800px;
-    left: 0;
-    outline: none !important;
-    padding: 0;
-    top: calc(50vh - 400px);
-    width: 800px;
-  }
 }
 
 /* Shimmer section */
 .shimmer {
-  --offset: 1px;
   border-radius: 10px;
   box-shadow:
     0 0 10px var(--c-main),
@@ -143,6 +123,10 @@ dialog {
   overflow: hidden;
   padding: 20px 10px 40px 10px;
   position: relative;
+
+  &.short {
+    height: 0;
+  }
 
   form {
     border-radius: inherit;
@@ -157,10 +141,6 @@ dialog {
   }
 }
 
-.shimmer.short {
-  height: 0;
-}
-
 .form-box {
   margin: 10px;
 }
@@ -168,8 +148,10 @@ dialog {
 /* Image helpers */
 img {
   max-height: 400px;
+  max-width: 100%;
   width: 60%;
   height: auto;
+  object-fit: contain;
 }
 
 .fill {
@@ -208,14 +190,12 @@ img {
 /*  Year selector for Champions page */
 .year-select {
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
   border: none;
   background: transparent;
   font: inherit;
   text-decoration: underline;
   color: inherit;
-  padding: 0;
+  padding: 0 0.75em 0 0;
   margin: 0;
   cursor: pointer;
   position: relative;
@@ -225,17 +205,39 @@ img {
 .year-select-wrapper {
   position: relative;
   display: inline-block;
+
+  &::after {
+    content: "▾";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8em;
+    z-index: 100;
+  }
 }
 
-.year-select {
-  padding-right: 0.75em;
-}
+/* Responsive: phone */
+@media (max-width: 600px) {
+  /* answer box grows to fit a wrapped question; input goes full width */
+  .shimmer {
+    height: auto;
 
-.year-select-wrapper::after {
-  content: "▾";
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.8em;
+    &.short {
+      height: auto;
+    }
+
+    form {
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+    }
+  }
+
+  /* plain content images use the full width on small screens */
+  img {
+    width: 100%;
+  }
 }

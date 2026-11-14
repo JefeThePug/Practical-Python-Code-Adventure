@@ -14,4 +14,7 @@
     /* Font stacks */
     --font-main: "Roboto Mono", monospace; /* loaded from Google Fonts in default.html */
     --font-code: "DejaVu Sans Mono", monospace; /* self-hosted, see _base.css */
+
+    /* Layout (shrunk for phones in _layout.css) */
+    --section-border: 32px;
 }
