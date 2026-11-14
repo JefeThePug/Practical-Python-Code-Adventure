@@ -33,7 +33,7 @@ block main %}
     <p class="main lg">[ click to get input ]</p>
     <h3>Solutions</h3>
     <p>
-      This site offers no online IDE or Python Interpreter. You should write any
+      This site offers no online IDE or Python interpreter. You should write any
       code used to deduce the solutions on your own machine using the downloaded
       puzzle input files. Each challenge has exactly one correct solution for
       each of its two parts, which can be obtained using the puzzle input and
@@ -44,9 +44,18 @@ block main %}
       solution form on the site for submission. Make sure not to leave off any
       part of it. For Part 1, if the correct solution is submitted, you will
       immediately be able to view Part 2 of the challenge. For Part 2, if the
-      correct solution is submitted, and you are logged in with Discord, you
-      will be awarded a congratulatory screen with a link to the private
-      discussion channel for that challenge in the Practical Python server.
+      correct solution is submitted, you will be taken to a completion screen
+      automatically.
+    </p>
+    <p>
+      On that screen, if you are logged in with Discord, you will see a link to
+      the private discussion channel for that challenge in the Practical Python
+      server. If you have completed all 10 weeks, you will also see a place to
+      input your GitHub username. Only GitHub usernames are permitted; no
+      personal websites or other portfolios. If you do not want to have your
+      GitHub account linked in the Champions section of the page, you can leave
+      this blank and check the "do not ask again" box to prevent being asked
+      repeatedly.
     </p>
     <p>
       Practical Python also offers a public discussion channel for help if you
@@ -61,16 +70,32 @@ block main %}
     </p>
     <p>
       {% for condition in ("off", "on") %}
-      <iconify-icon class="symbols icon {{ condition }}" icon="{{ ICONS[year]['a-icon'] }}" aria-hidden="true"></iconify-icon>
-      <iconify-icon class="symbols icon {{ condition }}" icon="{{ ICONS[year]['b-icon'] }}" aria-hidden="true"></iconify-icon>
+      <iconify-icon
+        class="symbols icon {{ condition }}"
+        icon="{{ ICONS[year]['a-icon'] }}"
+        aria-hidden="true"
+      ></iconify-icon>
+      <iconify-icon
+        class="symbols icon {{ condition }}"
+        icon="{{ ICONS[year]['b-icon'] }}"
+        aria-hidden="true"
+      ></iconify-icon>
       {% endfor %}
     </p>
     <p>
       These icons will light up when you have completed each part of the
       challenge:<br />the
-      <iconify-icon class="symbols icon on" icon="{{ ICONS[year]['a-icon'] }}" aria-hidden="true"></iconify-icon>
+      <iconify-icon
+        class="symbols icon on"
+        icon="{{ ICONS[year]['a-icon'] }}"
+        aria-hidden="true"
+      ></iconify-icon>
       {{ ICONS[year]["a-text"] }} for Part 1 and the
-      <iconify-icon class="symbols icon on" icon="{{ ICONS[year]['b-icon'] }}" aria-hidden="true"></iconify-icon>
+      <iconify-icon
+        class="symbols icon on"
+        icon="{{ ICONS[year]['b-icon'] }}"
+        aria-hidden="true"
+      ></iconify-icon>
       {{ ICONS[year]["b-text"] }} for Part 2.
     </p>
     <p>

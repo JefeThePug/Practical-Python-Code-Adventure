@@ -40,9 +40,11 @@
       rel="stylesheet"
       type="text/css"
     />
-    {%- endfor %}
-    {%- for script in js_files %}
-    <script src="{{ url_for('static', filename='js/' ~ script ~ '.js') }}" defer></script>
+    {%- endfor %} {%- for script in js_files %}
+    <script
+      src="{{ url_for('static', filename='js/' ~ script ~ '.js') }}"
+      defer
+    ></script>
     {%- endfor %}
     <link rel="preconnect" href="https://api.iconify.design" crossorigin />
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
@@ -69,8 +71,8 @@
           <span class="nav-text">Home</span>
         </a>
         {% endif %} {% if request.endpoint == 'main.release' %}
-        <div class="year-wrapper">
-          <div class="false-link year-menu" tabindex="0">
+        <div class="menu-wrapper">
+          <div class="false-link menu-trigger" tabindex="0">
             <iconify-icon
               class="symbols"
               icon="material-symbols:calendar-clock-outline"
@@ -104,7 +106,15 @@
             icon="material-symbols:trophy-outline"
             aria-hidden="true"
           ></iconify-icon>
-          <span class="nav-text">Champions</span>
+          <span class="nav-text">Leaderboard</span>
+        </a>
+        <a href="{{ url_for('routes.fan_art') }}">
+          <iconify-icon
+            class="symbols"
+            icon="material-symbols:wall-art-outline"
+            aria-hidden="true"
+          ></iconify-icon>
+          <span class="nav-text">Fan Art</span>
         </a>
         <a href="{{ url_for('routes.gratitude') }}">
           <iconify-icon
@@ -122,34 +132,32 @@
           ></iconify-icon>
           <span class="nav-text">Sponsors</span>
         </a>
-        <a href="{{ url_for('auth.pre_login') }}">
-          <div class="user-menu">
-            {% if session.get("user_data") %} {% if img.startswith('http') %} {%
-            set img_src = img %} {% else %} {% set img_src = url_for('static',
-            filename='images/no_img.png') %} {% endif %}
-            <img alt="Logout" src="{{ img_src }}" />
-            <iconify-icon
-              class="symbols user-action"
-              icon="material-symbols:emoji-people"
-              aria-hidden="true"
-            ></iconify-icon>
-            <span class="user-action">Logout</span>
-            {% else %}
-            <iconify-icon
-              class="symbols user-label"
-              icon="material-symbols:emoji-people"
-              aria-hidden="true"
-            ></iconify-icon>
-            <span class="user-label">Guest</span>
-            <iconify-icon
-              class="symbols user-action"
-              icon="material-symbols:emoji-people"
-              aria-hidden="true"
-            ></iconify-icon>
-            <span class="user-action">Login</span>
-            {% endif %}
+        {% if session.get("user_data") %} {% if img.startswith('http') %} {% set
+        img_src = img %} {% else %} {% set img_src = url_for('static',
+        filename='images/no_img.png') %} {% endif %}
+        <div class="menu-wrapper user-wrapper">
+          <div class="menu-trigger" tabindex="0" aria-label="Account menu">
+            <img alt="" src="{{ img_src }}" />
           </div>
+          <div class="dropdown">
+            <button
+              onclick="location.href = this.dataset.url"
+              data-url="{{ url_for('auth.pre_login') }}"
+            >
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+        {% else %}
+        <a href="{{ url_for('auth.pre_login') }}">
+          <iconify-icon
+            class="symbols"
+            icon="material-symbols:emoji-people"
+            aria-hidden="true"
+          ></iconify-icon>
+          <span class="nav-text">Login</span>
         </a>
+        {% endif %}
       </div>
     </nav>
 

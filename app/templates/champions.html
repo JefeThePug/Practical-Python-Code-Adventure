@@ -8,9 +8,8 @@
     <img src="{{ url_for('static', filename='images/good_job.png') }}" alt="Congratulations Image">
   </div>
   <div>
-  <h2>Congratulations</h2>
-    
-  <h3>
+  <h2>
+    Congratulations
     <form method="POST" style="display:inline;">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
@@ -27,29 +26,37 @@
       </span>
     </form>
     Champions
-  </h3>
-
-    <p>everyone who completed both parts of all 10 weeks!</p>
-
-    <ul>
-    {% for i in range(champions|length) %}
+  </h2>
+    {% set count = champions|length %}
+    {% if count %}
+    <p class="champion-count">
+      <span class="b">{{ count }}</span>
+      adventurer{{ '' if count == 1 else 's' }} completed all 10 weeks!
+    </p>
+    <ul class="champion-wall">
+    {% for i in range(count) %}
       <li>
         {% if githubs[i] %}
-        <a href="https://github.com/{{ githubs[i] }}" target="_blank" rel="noopener noreferrer nofollow" >
-          {{ champions[i] }} <iconify-icon icon="mdi:github" aria-hidden="true"></iconify-icon>
+        <a class="champion" href="https://github.com/{{ githubs[i] }}" target="_blank" rel="noopener noreferrer nofollow">
+          <iconify-icon class="champion-trophy" icon="material-symbols:trophy" aria-hidden="true"></iconify-icon>
+          {{ champions[i] }}
+          <iconify-icon class="github-icon" icon="mdi:github" aria-hidden="true"></iconify-icon>
         </a>
         {% else %}
-        <span class="false-link">
-            {{ champions[i] }}
+        <span class="champion">
+          <iconify-icon class="champion-trophy" icon="material-symbols:trophy" aria-hidden="true"></iconify-icon>
+          {{ champions[i] }}
         </span>
         {% endif %}
       </li>
     {% endfor %}
     </ul>
+    {% else %}
+    <p class="champion-count">No champions yet. Will you be the first?</p>
+    {% endif %}
   </div>
 </section>
 <section class="section" id="all_scores">
-  <div id="score-dialog-root"></div>
   <div>
     <h2>
       All
@@ -71,31 +78,93 @@
       Progress
     </h2>
 
-    <table>
-      <tbody>
-        <tr>
-          <th style="vertical-align:bottom;padding:0"><span class="ssm">TOTALS</span></th>
-          {% for w in range(1, 11) %}<th>Week {{w}}</th>{% endfor %}
-        </tr>
-        {% for part in range(1, 3) %}
-        <tr>
-          <th>Part {{ part }}</th>
-          {% for w in range(1, 11) %}
-          <td>
-            {% set total = totals[w][part] %}
-            <span class="{{ 'on' if part == 1 else 'b' }}">
-              {{ total }}
-              {% if total > 0 %}
-              <iconify-icon class="symbols" icon="material-symbols:accessibility-new" style="vertical-align:bottom;" aria-hidden="true"></iconify-icon>
-              {% endif %}
+    <div class="week-chart">
+      {% for row in range(2) %}
+      <ol class="week-cols">
+        {% for w in range(1, 6) %}
+        <li class="week-col">
+          <div class="week-bars" aria-hidden="true">
+            {% for part in (1, 2) %}
+            {% set total = totals[5*row + w][part] %}
+            <span class="bar-wrap">
+              <span class="bar-count">{{ total if total > 0 else "" }}</span>
+              <span
+                class="bar part{{ part }}"
+                style="--p: {{ (total / max_total) | round(3) }}"
+              ></span>
             </span>
-          </td>
-          {% endfor %}
-        </tr>
+            {% endfor %}
+          </div>
+          <span class="week-label" aria-hidden="true">{{ 5*row + w }}</span>
+          <span class="sr-only">
+            Week {{ 5*row + w }}: {{ totals[5*row + w][1] }} solved Part 1,
+            {{ totals[5*row + w][2] }} solved Part 2
+          </span>
+        </li>
         {% endfor %}
-      </tbody>
-    </table>
-    <p></p>
+      </ol>
+      {% endfor %}
+      <p class="chart-key" aria-hidden="true">
+        <span class="key part1"></span> Part 1
+        <span class="key part2"></span> Part 2
+      </p>
+    </div>
+  </div>
+</section>
+
+<section  class="section" id="leaderboards">
+  <div>
+    <h2>
+      <form method="POST" style="display:inline;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if board %}<input type="hidden" name="lb" value="{{ board.id }}">{% endif %}
+
+      <span class="year-select-wrapper">
+        <select name="year" class="year-select"
+          onchange="sessionStorage.setItem('scrollY', window.scrollY); this.form.submit();">
+          {% for y in range(config.CURRENT_YEAR, 2024, -1) %}
+            {% set y_str = y|string %}
+            <option value="{{ y_str }}" {% if y_str == year %}selected{% endif %}>
+              {{ y }}
+            </option>
+          {% endfor %}
+        </select>
+      </span>
+      </form>
+      Leaderboards
+    </h2>
+
+    <p class="lb-picker">
+      <label for="lb-select">Showing:</label>
+      <span class="year-select-wrapper">
+        <select id="lb-select" class="year-select leaderboards" onchange="location.href = this.value">
+          <option value="{{ url_for('routes.champions', _anchor='leaderboards') }}">
+            Global
+          </option>
+          {% for b in boards %}
+          <option
+            value="{{ url_for('routes.champions', lb=b.id, _anchor='leaderboards') }}"
+            {{ 'selected' if board and b.id == board.id }}
+          >
+            {{ b.name }} ({{ b.member_count }})
+          </option>
+          {% endfor %}
+        </select>
+      </span>
+      {% if not board and session.get("user_data") and not (boards | selectattr("is_creator") | list) %}
+      <button title="Click here to create a new private leaderboard" class="leaderboard-edits">
+        &nbsp;Create&nbsp;
+        <iconify-icon class="symbols lb-edit" icon="emojione-monotone:new-button" aria-hidden="true"></iconify-icon>
+      </button>
+      {% elif board and board.is_creator %}
+      <button title="Click here to edit the name of your private leaderboard" class="leaderboard-edits">
+        <iconify-icon class="symbols lb-edit" icon="circum:edit" aria-hidden="true"></iconify-icon>
+      </button>
+      <button title="Click here to delete your private leaderboard" class="leaderboard-edits">
+        <iconify-icon class="symbols lb-edit" icon="circum:trash" aria-hidden="true"></iconify-icon>
+      </button>
+      {% endif %}
+    </p>
 
     <table>
       <tr>
@@ -107,9 +176,11 @@
     <tr>
       {% for week in item.progress %}
         <td>
-        {%- for c in week -%}
-          <span class="{{ 'off' if c == '☆' else 'on' }} lg">{{ c }}</span>
-        {%- endfor -%}
+          <iconify-icon
+            class="small-icon {{ 'off' if week == 'empty' else 'on' }}"
+            icon="dashicons:star-{{ week }}"
+            aria-hidden="true"
+          ></iconify-icon>
         </td>
       {% endfor %}
       <td style="border-right:none; text-align:left;">

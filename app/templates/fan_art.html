@@ -1,0 +1,174 @@
+{% extends "default.html" %} {% block title %} Fan Art {% endblock %} {% block
+main %}
+<section class="section" id="announcement">
+  <div class="img-container">
+    <img
+      src="{{ url_for('static', filename='images/sponsor.png') }}"
+      alt="Sponsor Image"
+    />
+  </div>
+  <div>
+    <h2>Fan Art Submissions</h2>
+    <p>
+      Practical Python Code Adventure welcomes fan art inspired by its stories,
+      characters, puzzles, and the worlds within them. Whether it's a drawing,
+      painting, animation, or video, we'd love to see how the community brings
+      these adventures to life.
+    </p>
+    <h2>How Can I Submit My Art?</h2>
+    <p>
+      To have your work considered for display on the site, please
+      <a href="mailto:jefethepug@protonmail.com">send me an email</a>
+      include the following:
+    </p>
+    <ul>
+      <li><span class="b">Display Name</span></li>
+      <ul>
+        <li>The name you'd like displayed alongside your work.</li>
+      </ul>
+      <li><span class="b">Artwork</span></li>
+      <ul>
+        <li>An image or video of your creation.</li>
+      </ul>
+      <li><span class="b">Description</span></li>
+      <ul>
+        <li>
+          A brief description of what your artwork depicts or the inspiration
+          behind it.
+        </li>
+      </ul>
+      <li><span class="b">Art Portfolio</span> (Optional)</li>
+      <ul>
+        <li>
+          A link to your online art portfolio<span class="b">※</span>, if you
+          have one.
+        </li>
+      </ul>
+    </ul>
+    <h4>A few guidelines to keep in mind:</h4>
+    <ul>
+      <li>
+        Submissions must be
+        <span class="b">
+          original creations inspired by Practical Python Code Adventure
+        </span>
+        or its content.
+      </li>
+      <li>
+        <span class="b">
+          ※ Only dedicated art portfolios will be accepted as portfolio
+          links</span
+        >. General personal websites, GitHub profiles, programming projects, and
+        other non-art portfolios will not be included.
+      </li>
+      <li>
+        <span class="b">Submissions will be reviewed</span> before being
+        featured on the site.
+      </li>
+      <li>
+        By submitting your work, you grant permission for it to be displayed on
+        Practical Python Code Adventure with the provided display name and
+        description.
+        <span class="b">You retain ownership of your creation</span>.
+      </li>
+    </ul>
+  </div>
+</section>
+<section class="section art-gallery" id="art-gallery">
+  <div class="art-grid">
+    {% for item in artwork %}
+    <article class="art-card">
+      <div
+        class="art-media"
+        tabindex="0"
+        role="button"
+        aria-label="View {{ item.name }}'s artwork full size"
+        data-type="{{ item.media_type }}"
+        data-src="{{ item.media_link }}"
+        data-alt="{{ item.name }}"
+      >
+        {% if item.media_type == "img" %}
+        <img src="{{ item.media_link }}" alt="{{ item.name }}" loading="lazy" />
+        {% else %}
+        <video preload="metadata" muted playsinline>
+          <source src="{{ item.media_link }}#t=0.1" />
+        </video>
+        <iconify-icon
+          class="art-play"
+          icon="material-symbols:play-circle-outline"
+          aria-hidden="true"
+        ></iconify-icon>
+        {% endif %}
+      </div>
+
+      <div class="art-content">
+        {% if item.profile %}
+        <a
+          class="art-portfolio"
+          href="{{ item.profile }}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <h3 class="art-name">
+            {{ item.name }}
+            <iconify-icon
+              class="symbols"
+              icon="pepicons-pencil:paint-pallet-circle-filled"
+              aria-hidden="true"
+            ></iconify-icon>
+          </h3>
+        </a>
+        {% else %}
+        <h3 class="art-name">{{ item.name }}</h3>
+        {% endif %}
+
+        <p class="art-description">{{ item.message }}</p>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <dialog class="art-lightbox" id="art-lightbox" aria-label="Full size artwork">
+    <div class="art-lightbox-media"></div>
+    <form method="dialog">
+      <button>Close</button>
+    </form>
+  </dialog>
+
+  {% if total_pages > 1 %}
+  <nav class="art-pagination" aria-label="Artwork pages">
+    {% if page > 1 %}
+    <a
+      href="{{ url_for(request.endpoint, page=page - 1) }}"
+      aria-label="Previous page"
+    >
+      ‹
+    </a>
+    {% endif %} {% for p in range(1, total_pages + 1) %}
+    <a
+      href="{{ url_for(request.endpoint, page=p) }}"
+      class="{{ 'active' if p == page else '' }}"
+      aria-current="{{ 'page' if p == page else 'false' }}"
+    >
+      {{ p }}
+    </a>
+    {% endfor %} {% if page < total_pages %}
+    <a
+      href="{{ url_for(request.endpoint, page=page + 1) }}"
+      aria-label="Next page"
+    >
+      ›
+    </a>
+    {% endif %}
+  </nav>
+  {% endif %}
+</section>
+
+<section class="section" id="partner">
+  <p>
+    <button onclick="location.href = '/'">Home</button>
+  </p>
+</section>
+
+<script src="{{ url_for('static', filename='js/fan_art.js') }}" defer></script>
+{% endblock %}
