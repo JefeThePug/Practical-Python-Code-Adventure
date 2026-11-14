@@ -513,6 +513,7 @@ class Leaderboards:
             )
             members.append(
                 {
+                    "user_id": user.user_id,
                     "name": user.name,
                     "progress": states,
                     "done": sum(sum(s) for s in states),

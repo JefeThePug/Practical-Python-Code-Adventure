@@ -7,6 +7,8 @@ files = [
     "_forms_buttons.css",
     "components/_navbar.css",
     "components/_sponsor.css",
+    "components/_fan_art.css",
+    "components/_champions.css",
 ]
 
 output = "\n".join(Path(f"app/static/style/{f}").read_text() for f in files)

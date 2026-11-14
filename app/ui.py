@@ -12,9 +12,9 @@ ICON_REFERENCE = {
         "b-text": "fire",
     },
     "2027": {
-        "a-icon": "material-symbols:comedy-mask-outline",
-        "a-text": "comedy mask",
-        "b-icon": "streamline-ultimate:funny-mask",
-        "b-text": "funny mask",
+        "a-icon": "hugeicons:joker",
+        "a-text": "jester hat",
+        "b-icon": "streamline-freehand:circus-tent",
+        "b-text": "circus tent",
     },
 }

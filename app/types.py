@@ -82,6 +82,7 @@ class LeaderboardRow(TypedDict):
 
 
 class LeaderboardMemberRow(TypedDict):
+    user_id: str
     name: str | None
     progress: list[list[bool]]
     done: int

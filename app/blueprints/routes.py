@@ -45,9 +45,16 @@ def champions():
         year = request.form["year"]
         if year in valid_years:
             session["year"] = year
-        return redirect(url_for("routes.champions"))
+        return redirect(
+            url_for("routes.champions", lb=request.form.get("lb", type=int))
+        )
 
     user = get_progress()
+
+    user_id = session.get("user_data", {}).get("id")
+    boards = app.data_access.leaderboards.get_for_user(user_id) if user_id else []
+    lb = request.args.get("lb", type=int)
+    board = next((b for b in boards if b["id"] == lb), None)
 
     champion_list = app.data_access.get_all_champions(session["year"])
     all_data = app.data_access.get_glance(session["year"])
@@ -62,25 +69,42 @@ def champions():
             s = sum(p)
             totals[i][1] += s > 0
             totals[i][2] += s == 2
+    max_total = max(t[1] for t in totals.values()) or 1
 
     formatted_data = []
     for d in all_data:
-        progress = "".join(
-            "".join("☆★"[part] for part in week) for week in d["progress"]
-        )
-        if "★" not in progress:
+        score = sum(sum(week) for week in d["progress"])
+        if score == 0:
             continue
-        p = iter(progress)
-        progress = ["".join(pair) for pair in zip(p, p)]
         formatted_data.append(
             {
-                "progress": progress,
-                "scores": [x.count("★") for x in progress],
+                "progress": [
+                    ("empty", "half", "filled")[sum(week)] for week in d["progress"]
+                ],
+                "score": score,
                 "name": d["name"],
                 "id": d["user_id"],
             }
         )
-    formatted_data.sort(key=lambda x: sum(x["scores"]), reverse=True)
+
+    if board and user_id:
+        formatted_data = [
+            {
+                "progress": [
+                    ("empty", "half", "filled")[sum(week)] for week in m["progress"]
+                ],
+                "score": m["done"],
+                "name": m["name"],
+                "id": m["user_id"],
+            }
+            for m in app.data_access.leaderboards.get_members(
+                board["name"], session["year"], user_id
+            )
+        ]
+
+    formatted_data.sort(key=lambda x: x["score"], reverse=True)
+
+    print(f"USERID{user_id}")
 
     return render_template(
         "champions.html",
@@ -89,7 +113,10 @@ def champions():
         champions=names,
         githubs=links,
         totals=totals,
+        max_total=max_total,
         all_data=formatted_data,
+        boards=boards,
+        board=board,
     )
 
 
@@ -121,6 +148,34 @@ def sponsor():
         t3=t3,
         t2=t2,
         t1=t1,
+    )
+
+
+@route_bp.route("/fan_art")
+def fan_art():
+    """Render the fan art page.
+    Returns: Rendered fan_art.html template with user information.
+    """
+    user = get_progress()
+
+    page = max(1, request.args.get("page", 1, type=int))
+    per_page = 8
+
+    fan_art_data = get_app().data_access.admin.get_fan_art()
+
+    total_pages = (len(fan_art_data) + per_page - 1) // per_page
+    page = min(page, max(total_pages, 1))
+
+    start = (page - 1) * per_page
+    artwork = fan_art_data[start : start + per_page]
+
+    return render_template(
+        "fan_art.html",
+        img=user["img"],
+        year=session["year"],
+        artwork=artwork,
+        page=page,
+        total_pages=total_pages,
     )
 
 
