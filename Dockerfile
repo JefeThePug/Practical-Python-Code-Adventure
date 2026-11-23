@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.15-slim-trixie
 
 # Update OS packages and remove cache to reduce image size
 RUN apt-get update \
@@ -8,6 +8,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+
+ENV UV_PYTHON=/usr/local/bin/python
 
 # Install uv
 RUN pip install --no-cache-dir uv

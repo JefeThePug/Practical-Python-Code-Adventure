@@ -22,7 +22,7 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: postgres:17-alpine
+    image: postgres:19-alpine
     env_file: .env
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
@@ -35,11 +35,11 @@ services:
       - adventure
     restart: unless-stopped
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres19-data:/var/lib/postgresql
 
 networks:
   adventure:
     driver: bridge
 
 volumes:
-  postgres-data:
+  postgres19-data:
